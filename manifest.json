@@ -1,0 +1,33 @@
+{
+	"manifest_version": 2,
+
+	"name": "Pull Request Selfie",
+	"description": "Snap a selfie and include it in your pull request",
+	"version": "1.0",
+
+	"icons": {
+		"16": "icon16.png",
+		"48": "icon48.png",
+		"128": "icon128.png"
+	},
+
+	"permissions": [
+		"https://github.com/*",
+		"http://github.com/*"
+	],
+
+	"background": {
+		"scripts": ["background.js"]
+	},
+
+	"content_scripts": [{
+		"js": ["jquery.min.js", "content.js"],
+		"matches": ["*://github.com/*/compare/*"],
+		"run_at": "document_end"
+	}],
+
+    "web_accessible_resources": [
+        "jquery-1.10.1.min.map"
+    ]
+
+}
