@@ -13,8 +13,6 @@
   var videoContainer = '<video autoplay id="selfieVideo" style="width: 125px; height: 125px; padding-bottom: 35px;"></video>';
   var canvasContainer = '<canvas id="selfieCanvas" width="400" height="400" style="display: none;"></canvas>';
 
-  $(selfieButton).insertBefore(BUTTON_INSERT_BEFORE_SELECTOR);
-
   var setupSelfieStream = function() {
 
     if ($(BUTTON_INSERT_BEFORE_SELECTOR).length === 0) {
@@ -22,12 +20,13 @@
       return;
     }
 
+    $(selfieButton).insertBefore(BUTTON_INSERT_BEFORE_SELECTOR);
+    $(canvasContainer).insertBefore(SELFIE_BUTTON_SELECTOR);
+    $(videoContainer).insertBefore(SELFIE_BUTTON_SELECTOR);
     $(SELFIE_BUTTON_SELECTOR).on('click', addSelfie);
 
     navigator.webkitGetUserMedia(userMediaConstraints, function(stream) {
       selfieStream = stream;
-      $(canvasContainer).insertBefore(SELFIE_BUTTON_SELECTOR);
-      $(videoContainer).insertBefore(SELFIE_BUTTON_SELECTOR);
       $(VIDEO_SELECTOR).attr('src', window.URL.createObjectURL(selfieStream));
     });
   };
