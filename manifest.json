@@ -16,10 +16,6 @@
 		"http://github.com/*"
 	],
 
-	"background": {
-		"scripts": ["background.js"]
-	},
-
 	"content_scripts": [{
 		"js": ["jquery.min.js", "content.js"],
 		"matches": ["*://github.com/*/compare/*"],
