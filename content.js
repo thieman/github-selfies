@@ -73,6 +73,12 @@
   }
 
   var notifyFail = function() {
+    $(VIDEO_SELECTOR).remove();
+    $(CANVAS_SELECTOR).remove();
+    $(SELFIE_BUTTON_SELECTOR).prop('disabled', true);
+    $(SELFIE_BUTTON_SELECTOR).children('span').remove();
+    $(SELFIE_BUTTON_SELECTOR).text('Something broke :(');
+    $(SELFIE_BUTTON_SELECTOR).addClass('danger');
   };
 
   var hideOrShowElements = function() {
