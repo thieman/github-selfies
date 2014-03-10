@@ -70,11 +70,22 @@
       $(BODY_SELECTOR).val($(BODY_SELECTOR).val() + "\n");
     }
     $(BODY_SELECTOR).val($(BODY_SELECTOR).val() + "![selfie](" + link + ")\n");
-  };
+  }
 
   var notifyFail = function() {
   };
 
+  var hideOrShowElements = function() {
+    if ($('.write-tab.selected').length > 0 ) {
+      $(VIDEO_SELECTOR).css('display', 'inline-block');
+      $(SELFIE_BUTTON_SELECTOR).css('display', 'inline-block');
+    } else if ($('.preview-tab.selected').length > 0) {
+      $(VIDEO_SELECTOR).css('display', 'none');
+      $(SELFIE_BUTTON_SELECTOR).css('display', 'none');
+    }
+  };
+
   setTimeout(setupSelfieStream, 250);
+  setInterval(hideOrShowElements, 100);
 
 })();
