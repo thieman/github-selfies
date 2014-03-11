@@ -11,6 +11,8 @@
   var videoContainer = '<video autoplay id="selfieVideo" style="width: 125px; height: 125px; padding-bottom: 35px;"></video>';
   var canvasContainer = '<canvas id="selfieCanvas" style="display: none;"></canvas>';
 
+  var selfiesTaken = 0;
+
   var setupSelfieStream = function() {
 
     if ($(BUTTON_INSERT_BEFORE_SELECTOR).length === 0) {
@@ -23,6 +25,8 @@
       $(canvasContainer).insertBefore(SELFIE_BUTTON_SELECTOR);
       $(videoContainer).insertBefore(SELFIE_BUTTON_SELECTOR);
       $(SELFIE_BUTTON_SELECTOR).on('click', addSelfie);
+      $('.write-tab').on('click', showElements);
+      $('.preview-tab').on('click', hideElements);
       $(VIDEO_SELECTOR).attr('src', window.URL.createObjectURL(stream));
     });
   };
@@ -34,8 +38,11 @@
   };
 
   var addSelfie = function() {
+    var thisSelfieNumber = selfiesTaken + 1;
+    selfiesTaken++;
+    addSelfiePlaceholder(thisSelfieNumber);
     var imageData = snapSelfie();
-    var success = function(data) { addToBody(data['data']['link']); };
+    var success = function(data) { replacePlaceholderInBody(thisSelfieNumber, data['data']['link']); };
     uploadSelfie(imageData, success, notifyFail);
   };
 
@@ -65,11 +72,19 @@
     });
   };
 
-  var addToBody = function(link) {
+  var addSelfiePlaceholder = function(number) {
     if ($(BODY_SELECTOR).val() !== "") {
       $(BODY_SELECTOR).val($(BODY_SELECTOR).val() + "\n");
     }
-    $(BODY_SELECTOR).val($(BODY_SELECTOR).val() + "![selfie](" + link + ")\n");
+    $(BODY_SELECTOR).val($(BODY_SELECTOR).val() + "[[selfie-placeholder-" + number + "]]\n");
+  };
+
+  var replacePlaceholderInBody = function(number, link) {
+    var textarea = document.querySelector(BODY_SELECTOR);
+    var toReplace = "[[selfie-placeholder-" + number + "]]";
+    $(BODY_SELECTOR).val($(BODY_SELECTOR).val().replace(toReplace, "![selfie-" + number + "](" + link + ")"));
+    textarea.focus();
+    textarea.setSelectionRange(textarea.textLength, textarea.textLength);
   }
 
   var notifyFail = function() {
@@ -81,17 +96,16 @@
     $(SELFIE_BUTTON_SELECTOR).addClass('danger');
   };
 
-  var hideOrShowElements = function() {
-    if ($('.write-tab.selected').length > 0 ) {
-      $(VIDEO_SELECTOR).css('display', 'inline-block');
-      $(SELFIE_BUTTON_SELECTOR).css('display', 'inline-block');
-    } else if ($('.preview-tab.selected').length > 0) {
-      $(VIDEO_SELECTOR).css('display', 'none');
-      $(SELFIE_BUTTON_SELECTOR).css('display', 'none');
-    }
+  var hideElements = function() {
+    $(VIDEO_SELECTOR).css('display', 'none');
+    $(SELFIE_BUTTON_SELECTOR).css('display', 'none');
+  };
+
+  var showElements = function() {
+    $(VIDEO_SELECTOR).css('display', 'inline-block');
+    $(SELFIE_BUTTON_SELECTOR).css('display', 'inline-block');
   };
 
   setTimeout(setupSelfieStream, 250);
-  setInterval(hideOrShowElements, 100);
 
 })();
