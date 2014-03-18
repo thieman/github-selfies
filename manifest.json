@@ -1,29 +1,35 @@
 {
-	"manifest_version": 2,
+  "manifest_version": 2,
 
-	"name": "Pull Request Selfie",
-	"description": "Snap a selfie and include it in your pull request",
-	"version": "1.0",
+  "name": "GitHub Selfies",
+  "description": "Selfies! For GitHub! Hooray!",
+  "version": "1.0",
 
-	"icons": {
-		"16": "icon16.png",
-		"48": "icon48.png",
-		"128": "icon128.png"
-	},
+  "icons": {
+	"16": "icon16.png",
+	"48": "icon48.png",
+	"128": "icon128.png"
+  },
 
-	"permissions": [
-		"https://github.com/*",
-		"http://github.com/*"
-	],
+  "permissions": [
+	"https://github.com/*",
+	"http://github.com/*"
+  ],
 
-	"content_scripts": [{
-		"js": ["jquery.min.js", "content.js"],
-		"matches": ["*://github.com/*/compare*"],
-		"run_at": "document_end"
-	}],
+  "content_scripts": [
+    {
+	  "js": ["jquery.min.js", "compare.js"],
+	  "matches": ["*://github.com/*/compare*"],
+	  "run_at": "document_end"
+    },
+    {
+      "js": ["jquery.min.js", "pull.js"],
+      "matches": ["*://github.com/*/pull*"],
+      "run_at": "document_end"
+    }],
 
-    "web_accessible_resources": [
-        "jquery-1.10.1.min.map"
-    ]
+  "web_accessible_resources": [
+    "jquery-1.10.1.min.map"
+  ]
 
 }
