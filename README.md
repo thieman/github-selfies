@@ -1,4 +1,4 @@
-pr-selfie
-=========
+github-selfies
+==============
 
-Chrome extension to add images from your webcam to pull requests. Because selfies.
+Selfies! For GitHub! Hooray!
