@@ -6,21 +6,21 @@
   "version": "1.0",
 
   "icons": {
-	"16": "icon16.png",
-	"48": "icon48.png",
-	"128": "icon128.png"
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
 
   "permissions": [
-	"https://github.com/*",
-	"http://github.com/*"
+    "https://github.com/*",
+    "http://github.com/*"
   ],
 
   "content_scripts": [
     {
-	  "js": ["jquery.min.js", "selfie-base.js", "compare.js"],
-	  "matches": ["*://github.com/*/compare*"],
-	  "run_at": "document_end"
+      "js": ["jquery.min.js", "selfie-base.js", "compare.js"],
+      "matches": ["*://github.com/*/compare*"],
+      "run_at": "document_end"
     },
     {
       "js": ["jquery.min.js", "selfie-base.js", "pull.js"],
