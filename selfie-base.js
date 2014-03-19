@@ -15,12 +15,12 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
 
   this.setupSelfieStream = function() {
 
+    var that = this;
     if ($(this.insertBefore).length === 0) {
-      setTimeout(this.setupSelfieStream, 250);
+      setTimeout(function() { that.setupSelfieStream(); }, 250);
       return;
     }
 
-    var that = this;
     navigator.webkitGetUserMedia({video: true}, function(stream) {
       $(that.buttonHTML).insertBefore(that.insertBefore);
       $(that.canvasHTML).insertBefore(that.buttonSelector);

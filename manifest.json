@@ -24,7 +24,7 @@
     },
     {
       "js": ["jquery.min.js", "selfie-base.js", "pull.js"],
-      "matches": ["*://github.com/*/pull*"],
+      "matches": ["*://github.com/*/pull/*"],
       "run_at": "document_end"
     }],
 
