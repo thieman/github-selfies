@@ -18,12 +18,12 @@
 
   "content_scripts": [
     {
-	  "js": ["jquery.min.js", "compare.js"],
+	  "js": ["jquery.min.js", "selfie-base.js", "compare.js"],
 	  "matches": ["*://github.com/*/compare*"],
 	  "run_at": "document_end"
     },
     {
-      "js": ["jquery.min.js", "pull.js"],
+      "js": ["jquery.min.js", "selfie-base.js", "pull.js"],
       "matches": ["*://github.com/*/pull*"],
       "run_at": "document_end"
     }],
