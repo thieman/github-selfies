@@ -16,13 +16,21 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
   this.setupSelfieStream = function() {
 
     var that = this;
-    if ($(this.insertBefore).length === 0) {
-      setTimeout(function() { that.setupSelfieStream(); }, 250);
+    for (var i = 0; i < this.insertBefore.length; i++) {
+      var candidate = this.insertBefore[i];
+      if ($(candidate).length !== 0) {
+        break;
+      }
+      candidate = null;
+    };
+
+    if (candidate === null) {
+      setTimeout(function() { this.setupSelfieStream(); }, 250);
       return;
-    }
+    };
 
     navigator.webkitGetUserMedia({video: true}, function(stream) {
-      $(that.buttonHTML).insertBefore(that.insertBefore);
+      $(that.buttonHTML).insertBefore(candidate);
       $(that.canvasHTML).insertBefore(that.buttonSelector);
       $(that.videoHTML).insertBefore(that.buttonSelector);
 

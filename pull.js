@@ -1,7 +1,7 @@
 (function() {
 
   var client = new GitHubSelfies(
-    "[name='comment_and_close']",
+    ["[name='comment_and_close']", "button:contains(Comment)"],
     "[name='comment[body]']",
     "#totallyAwesomeSelfieButton",
     "#selfieVideo",
