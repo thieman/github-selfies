@@ -1,7 +1,7 @@
 (function() {
 
   var client = new GitHubSelfies(
-    ".composer-submit",
+    [".composer-submit"],
     "#pull_request_body",
     "#totallyAwesomeSelfieButton",
     "#selfieVideo",
