@@ -1,4 +1,4 @@
-github-selfies
+LOLgithub-selfies
 ==============
 
 Selfies! For GitHub! Hooray!
