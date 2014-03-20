@@ -25,7 +25,7 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
     };
 
     if (candidate === null) {
-      setTimeout(function() { this.setupSelfieStream(); }, 250);
+      setTimeout(function() { that.setupSelfieStream(); }, 250);
       return;
     };
 

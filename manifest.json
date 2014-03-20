@@ -26,7 +26,18 @@
       "js": ["jquery.min.js", "selfie-base.js", "pull.js"],
       "matches": ["*://github.com/*/pull/*"],
       "run_at": "document_end"
-    }],
+    },
+    {
+      "js": ["jquery.min.js", "selfie-base.js", "new-issue.js"],
+      "matches": ["*://github.com/*/issues/new"],
+      "run_at": "document_end"
+    },
+    {
+      "js": ["jquery.min.js", "selfie-base.js", "issues.js"],
+      "matches": ["*://github.com/*/issues/*"],
+      "run_at": "document_end"
+    }
+  ],
 
   "web_accessible_resources": [
     "jquery-1.10.1.min.map"
