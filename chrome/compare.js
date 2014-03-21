@@ -18,7 +18,7 @@
       var video = document.querySelector(that.videoSelector);
       $(that.videoSelector).attr('src', window.URL.createObjectURL(stream));
       $(that.videoSelector).css('display', 'inline-block');
-    });
+    }, that.notifyFail);
   };
 
   client.stopVideo = function() {
