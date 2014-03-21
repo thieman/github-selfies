@@ -11,6 +11,7 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
   this.canvasHTML = canvasHTML;
 
   this.selfiesTaken = 0;
+  this.stream = null;
   this.setupComplete = false;
 
   this.setupSelfieStream = function() {
@@ -29,19 +30,17 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
       return;
     };
 
-    navigator.mozGetUserMedia({video: true}, function(stream) {
-      $(that.buttonHTML).insertBefore(candidate);
-      $(that.canvasHTML).insertBefore(that.buttonSelector);
-      $(that.videoHTML).insertBefore(that.buttonSelector);
+    $(that.buttonHTML).insertBefore(candidate);
+    $(that.canvasHTML).insertBefore(that.buttonSelector);
+    $(that.videoHTML).insertBefore(that.buttonSelector);
 
-      $(that.buttonSelector).on('click', $.proxy(that.addSelfie, that));
-      $('.write-tab').on('click', $.proxy(that.showElements, that));
-      $('.preview-tab').on('click', $.proxy(that.hideElements, that));
+    $(that.buttonSelector).on('click', $.proxy(that.addSelfie, that));
+    $(that.buttonSelector).hover($.proxy(that.startVideo, that),
+                                 $.proxy(that.stopVideo, that));
+    $('.write-tab').on('click', $.proxy(that.showElements, that));
+    $('.preview-tab').on('click', $.proxy(that.hideElements, that));
 
-      $(that.videoSelector).attr('src', window.URL.createObjectURL(stream));
-      that.setupComplete = true;
-    },
-    function() {});
+    that.setupComplete = true;
 
   }
 
@@ -112,13 +111,27 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
     $(this.buttonSelector).addClass('danger');
   };
 
+  this.startVideo = function() {
+    var that = this;
+    navigator.mozGetUserMedia({video: true}, function(stream) {
+      that.stream = stream;
+      var video = document.querySelector(that.videoSelector);
+      $(that.videoSelector).attr('src', window.URL.createObjectURL(stream));
+    },
+    function() {});
+  };
+
+  this.stopVideo = function() {
+    var video = document.querySelector(this.videoSelector);
+    this.stream.stop();
+    this.stream = null;
+  };
+
   this.hideElements = function() {
-    $(this.videoSelector).css('display', 'none');
     $(this.buttonSelector).css('display', 'none');
   };
 
   this.showElements = function() {
-    $(this.videoSelector).css('display', 'inline-block');
     $(this.buttonSelector).css('display', 'inline-block');
   };
 
