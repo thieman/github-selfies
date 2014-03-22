@@ -117,7 +117,7 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
       that.stream = stream;
       var video = document.querySelector(that.videoSelector);
       $(that.videoSelector).attr('src', window.URL.createObjectURL(stream));
-    });
+    }, this.notifyFail);
   };
 
   this.stopVideo = function() {
