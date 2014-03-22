@@ -23,16 +23,16 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
         break;
       }
       candidate = null;
-    };
+    }
 
     if (candidate === null) {
       setTimeout(function() { that.setupSelfieStream(); }, 250);
       return;
-    };
+    }
 
     $(that.buttonHTML).insertBefore(candidate);
     $(that.canvasHTML).insertBefore(that.buttonSelector);
-    $(that.videoHTML).insertBefore(that.buttonSelector);
+    $(that.videoHTML ).insertBefore(that.buttonSelector);
 
     $(that.buttonSelector).on('click', $.proxy(that.addSelfie, that));
     $(that.buttonSelector).hover($.proxy(that.startVideo, that),
@@ -42,7 +42,7 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
 
     that.setupComplete = true;
 
-  }
+  };
 
   this.resizeCanvasElement = function() {
     var video = document.querySelector(this.videoSelector);
@@ -56,7 +56,9 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
     this.selfiesTaken++;
     this.addSelfiePlaceholder(thisSelfieNumber);
     var imageData = this.snapSelfie();
-    var success = function(data) { that.replacePlaceholderInBody(thisSelfieNumber, data['data']['link']); };
+    var success = function(data) {
+      that.replacePlaceholderInBody(thisSelfieNumber, data['data']['link']);
+    };
     this.uploadSelfie(imageData, success, this.notifyFail);
   };
 
@@ -66,7 +68,9 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
     var canvas = document.querySelector(this.canvasSelector);
     var ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0);
-    return canvas.toDataURL('/image/jpeg', 1).split(',')[1];
+    var forReturn = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
+    console.log(forReturn);
+    return forReturn;
   };
 
   this.uploadSelfie = function(imageData, successCb, errorCb) {
