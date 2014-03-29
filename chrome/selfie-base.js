@@ -1,24 +1,19 @@
-function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector, canvasSelector, buttonHTML, videoHTML, canvasHTML) {
+// function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector, canvasSelector, buttonHTML, videoHTML, canvasHTML) {
+function GitHubSelfies(config) {
 
-  this.clientId = "cc9df57988494ca";
-  this.insertBefore = insertBefore;
-  this.bodySelector = bodySelector;
-  this.buttonSelector = buttonSelector;
-  this.videoSelector = videoSelector;
-  this.canvasSelector = canvasSelector;
-  this.buttonHTML = buttonHTML;
-  this.videoHTML = videoHTML;
-  this.canvasHTML = canvasHTML;
+  var stream;
 
-  this.selfiesTaken = 0;
-  this.stream = null;
-  this.setupComplete = false;
+  config.setupComplete = false;
+  config.selfiesTaken  = 0;
+  config.interval      = 100;
+  config.clientId      = 'cc9df57988494ca';
+  config.stream        = null;
 
-  this.setupSelfieStream = function() {
+  this.setupSelfieStream = function setupStream () {
 
     var that = this;
-    for (var i = 0; i < this.insertBefore.length; i++) {
-      var candidate = this.insertBefore[i] + ':visible';
+    for (var i = 0; i < config.insertBefore.length; i++) {
+      var candidate = config.insertBefore[i];
       if ($(candidate).length !== 0) {
         break;
       }
@@ -26,119 +21,135 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
     }
 
     if (candidate === null) {
-      setTimeout(function() { that.setupSelfieStream(); }, 250);
+      setTimeout(function() { setupStream(); }, 250);
       return;
     }
 
-    // with apologies to GitHub
-    $('.form-actions-protip').hide();
+    $(config.buttonHTML).insertBefore(candidate);
+    $(config.canvasHTML).insertBefore(config.buttonSelector);
+    $(config.videoHTML ).insertBefore(config.buttonSelector);
 
-    $(that.buttonHTML).insertBefore(candidate);
-    $(that.canvasHTML).insertBefore(that.buttonSelector);
-    $(that.videoHTML ).insertBefore(that.buttonSelector);
+    $(config.buttonSelector).on('click', $.proxy(addSelfie, that));
+    $(config.buttonSelector).hover($.proxy(startVideo, that),
+                                   $.proxy(stopVideo, that));
 
-    $(that.buttonSelector).on('click', $.proxy(that.addSelfie, that));
-    $(that.buttonSelector).hover($.proxy(that.startVideo, that),
-                                 $.proxy(that.stopVideo, that));
-    $('.write-tab').on('click', $.proxy(that.showElements, that));
-    $('.preview-tab').on('click', $.proxy(that.hideElements, that));
+    $('.write-tab').on('click', $.proxy(showElements, that));
+    $('.preview-tab').on('click', $.proxy(hideElements, that));
 
-    that.setupComplete = true;
-
+    config.setupComplete = true;
   };
 
-  this.resizeCanvasElement = function() {
-    var video = document.querySelector(this.videoSelector);
-    $(this.canvasSelector).attr('height', video.videoHeight);
-    $(this.canvasSelector).attr('width', video.videoWidth);
-  };
+  function resizeCanvasElement () {
+    var video = document.querySelector(config.videoSelector);
+    $(config.canvasSelector).attr('height', video.videoHeight);
+    $(config.canvasSelector).attr('width', video.videoWidth);
+  }
 
-  this.addSelfie = function(client) {
-    var that = this;
-    var thisSelfieNumber = this.selfiesTaken + 1;
-    this.selfiesTaken++;
-    this.addSelfiePlaceholder(thisSelfieNumber);
-    var imageData = this.snapSelfie();
-    var success = function(data) {
-      that.replacePlaceholderInBody(thisSelfieNumber, data['data']['link']);
-    };
-    this.uploadSelfie(imageData, success, this.notifyFail);
-  };
+  function addSelfie (client) {
+    var thisSelfieNumber = config.selfiesTaken++;
+    var imageData        = snapSelfie();
 
-  this.snapSelfie = function() {
-    this.resizeCanvasElement();
-    var video = document.querySelector(this.videoSelector);
-    var canvas = document.querySelector(this.canvasSelector);
-    var ctx = canvas.getContext('2d');
+    addSelfiePlaceholder(thisSelfieNumber);
+    uploadSelfie(imageData, success, this.notifyFail);
+
+    function success (res) {
+      replacePlaceholderInBody(thisSelfieNumber, res.data.link);
+    }
+  }
+
+  function snapSelfie () {
+    resizeCanvasElement();
+
+    var video  = document.querySelector(config.videoSelector)
+      , canvas = document.querySelector(config.canvasSelector)
+      , ctx    = canvas.getContext('2d');
+
+    return staticSelfie(video, canvas, ctx);
+  }
+
+  function staticSelfie (video, canvas, ctx) {
+    var imgBinary;
+
     ctx.drawImage(video, 0, 0);
-    var forReturn = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
-    console.log(forReturn);
-    return forReturn;
-  };
+    imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
 
-  this.uploadSelfie = function(imageData, successCb, errorCb) {
-    var that = this;
+    return imgBinary;
+  }
+
+  function dynamicSelfie (video, canvas, ctx) {
+    var encoder = new GIFEncoder();
+    encoder.setRepeat(0);
+
+  }
+
+  function uploadSelfie (imageData, successCb, errorCb) {
+
     $.ajax({
-      url: 'https://api.imgur.com/3/upload',
-      type: 'POST',
+      url  : 'https://api.imgur.com/3/upload',
+      type : 'POST',
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('Authorization', 'Client-ID ' + that.clientId);
+        xhr.setRequestHeader('Authorization', 'Client-ID ' + config.clientId);
       },
       data: {
-        type: 'base64',
-        image: imageData
+        type  : 'base64',
+        image : imageData
       },
-      dataType: 'json',
-      success: successCb,
-      error: errorCb
+      dataType : 'json',
+      success  : successCb,
+      error    : errorCb
     });
-  };
+  }
 
-  this.addSelfiePlaceholder = function(number) {
-    if ($(this.bodySelector).val() !== "") {
-      $(this.bodySelector).val($(this.bodySelector).val() + "\n");
+  function addSelfiePlaceholder (number) {
+    if ($(config.bodySelector).val() !== '') {
+      $(config.bodySelector).val($(config.bodySelector).val() + '\n');
     }
-    $(this.bodySelector).val($(this.bodySelector).val() + "[[selfie-placeholder-" + number + "]]\n");
-  };
+    $(config.bodySelector).val($(config.bodySelector).val() + '[[selfie-placeholder-' + number + ']]\n');
+  }
 
-  this.replacePlaceholderInBody = function(number, link) {
-    var textarea = document.querySelector(this.bodySelector);
-    var toReplace = "[[selfie-placeholder-" + number + "]]";
-    $(this.bodySelector).val($(this.bodySelector).val().replace(toReplace, "![selfie-" + number + "](" + link + ")"));
+  function replacePlaceholderInBody (number, link) {
+    var textarea  = document.querySelector(config.bodySelector)
+      , toReplace = '[[selfie-placeholder-' + number + ']]';
+
+    $(config.bodySelector)
+      .val($(config.bodySelector)
+      .val()
+      .replace(toReplace, '![selfie-' + number + '](' + link + ')'));
+
     textarea.focus();
     textarea.setSelectionRange(textarea.textLength, textarea.textLength);
   }
 
-  this.notifyFail = function() {
-    $(this.videoSelector).remove();
-    $(this.canvasSelector).remove();
-    $(this.buttonSelector).prop('disabled', true);
-    $(this.buttonSelector).children('span').remove();
-    $(this.buttonSelector).text('Something broke :(');
-    $(this.buttonSelector).addClass('danger');
-  };
+  function notifyFail () {
+    $(config.videoSelector ).remove();
+    $(config.canvasSelector).remove();
+    $(config.buttonSelector).prop('disabled', true);
+    $(config.buttonSelector).children('span').remove();
+    $(config.buttonSelector).text('Something broke :(');
+    $(config.buttonSelector).addClass('danger');
+  }
 
-  this.startVideo = function() {
+  function startVideo () {
     var that = this;
-    navigator.webkitGetUserMedia({video: true}, function(stream) {
-      that.stream = stream;
-      var video = document.querySelector(that.videoSelector);
-      $(that.videoSelector).attr('src', window.URL.createObjectURL(stream));
-    }, this.notifyFail);
+    navigator.webkitGetUserMedia({video: true}, function(_stream) {
+      var video = document.querySelector(config.videoSelector);
+      stream = _stream;
+      $(config.videoSelector).attr('src', window.URL.createObjectURL(stream));
+    });
   };
 
-  this.stopVideo = function() {
-    var video = document.querySelector(this.videoSelector);
-    this.stream.stop();
-    this.stream = null;
+  function stopVideo () {
+    var video = document.querySelector(config.videoSelector);
+    stream.stop();
+    stream = null;
   };
 
-  this.hideElements = function() {
-    $(this.buttonSelector).css('display', 'none');
+  function hideElements () {
+    $(config.buttonSelector).css('display', 'none');
   };
 
-  this.showElements = function() {
-    $(this.buttonSelector).css('display', 'inline-block');
+  function showElements () {
+    $(config.buttonSelector).css('display', 'inline-block');
   };
 
 };
