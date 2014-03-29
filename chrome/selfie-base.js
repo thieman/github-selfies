@@ -3,11 +3,16 @@ function GitHubSelfies(config) {
 
   var stream;
 
-  config.setupComplete = false;
-  config.selfiesTaken  = 0;
-  config.interval      = 100;
-  config.clientId      = 'cc9df57988494ca';
-  config.stream        = null;
+  config.buttonSelector = '#totallyAwesomeSelfieButton';
+  config.canvasSelector = '#selfieCanvas';
+  config.videoSelector  = '#selfieVideo';
+  config.setupComplete  = false;
+  config.selfiesTaken   = 0;
+  config.canvasHTML     = '<canvas id="selfieCanvas" style="display: none;"></canvas>',
+  config.videoHTML      = '<video autoplay id="selfieVideo" style="display: none;"></video>',
+  config.interval       = 100;
+  config.clientId       = 'cc9df57988494ca';
+  config.stream         = null;
 
   this.setupSelfieStream = function setupStream () {
 
@@ -21,20 +26,18 @@ function GitHubSelfies(config) {
     }
 
     if (candidate === null) {
-      setTimeout(function() { setupStream(); }, 250);
-      return;
+      return setTimeout(function() { setupStream(); }, 250);
     }
 
     $(config.buttonHTML).insertBefore(candidate);
     $(config.canvasHTML).insertBefore(config.buttonSelector);
     $(config.videoHTML ).insertBefore(config.buttonSelector);
 
-    $(config.buttonSelector).on('click', $.proxy(addSelfie, that));
-    $(config.buttonSelector).hover($.proxy(startVideo, that),
-                                   $.proxy(stopVideo, that));
+    $(config.buttonSelector).on('click', addSelfie);
+    $(config.buttonSelector).hover(startVideo, stopVideo);
 
-    $('.write-tab').on('click', $.proxy(showElements, that));
-    $('.preview-tab').on('click', $.proxy(hideElements, that));
+    $('.write-tab').on('click',   showElements);
+    $('.preview-tab').on('click', hideElements);
 
     config.setupComplete = true;
   };
@@ -74,12 +77,6 @@ function GitHubSelfies(config) {
     imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
 
     return imgBinary;
-  }
-
-  function dynamicSelfie (video, canvas, ctx) {
-    var encoder = new GIFEncoder();
-    encoder.setRepeat(0);
-
   }
 
   function uploadSelfie (imageData, successCb, errorCb) {
@@ -130,25 +127,29 @@ function GitHubSelfies(config) {
   }
 
   function startVideo () {
-    var that = this;
     navigator.webkitGetUserMedia({video: true}, function(_stream) {
       var video = document.querySelector(config.videoSelector);
       stream = _stream;
       $(config.videoSelector).attr('src', window.URL.createObjectURL(stream));
+      if (typeof config.postVideoStart === 'function') {
+        config.postVideoStart();
+      }
     });
   };
 
   function stopVideo () {
-    var video = document.querySelector(config.videoSelector);
+    $(config.videoSelector).css('display', 'none');
     stream.stop();
     stream = null;
   };
 
   function hideElements () {
+    $(config.videoSelector ).css('display', 'none');
     $(config.buttonSelector).css('display', 'none');
   };
 
   function showElements () {
+    $(config.videoSelector ).css('display', 'inline-block');
     $(config.buttonSelector).css('display', 'inline-block');
   };
 
