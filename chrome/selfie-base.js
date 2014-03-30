@@ -18,7 +18,7 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
 
     var that = this;
     for (var i = 0; i < this.insertBefore.length; i++) {
-      var candidate = this.insertBefore[i];
+      var candidate = this.insertBefore[i] + ':visible';
       if ($(candidate).length !== 0) {
         break;
       }
