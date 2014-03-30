@@ -30,6 +30,9 @@ function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector
       return;
     };
 
+    // with apologies to GitHub
+    $('.form-actions-protip').hide();
+
     $(that.buttonHTML).insertBefore(candidate);
     $(that.canvasHTML).insertBefore(that.buttonSelector);
     $(that.videoHTML).insertBefore(that.buttonSelector);
