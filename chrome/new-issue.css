@@ -26,3 +26,23 @@ canvas .hidden {
  z-index:10;
  margin:0 0 0 0;
 }
+
+#selfieToggleLabel {
+  margin-right:5px;
+}
+
+#selfieToggle {
+  margin-right:10px;
+}
+
+.selfieCheckBoxContainer.newIssueSelfieCheckBoxContainer {
+  margin-left:346px;
+}
+
+div.selfieProgress.newIssueSelfieProgress {
+  height:2px;
+  width:0px;
+  margin-right:48px;
+  background-color: red;
+  float:right;
+}
