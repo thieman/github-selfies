@@ -42,6 +42,11 @@ canvas .hidden {
   background-color: red;
 }
 
+.selfieProgressContainer {
+  margin-top:6px;
+  margin-bottom:-6px;
+}
+
 #selfieToggleLabel {
   margin-right:5px;
 }
