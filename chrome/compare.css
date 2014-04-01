@@ -8,6 +8,8 @@ video {
 
 .selfieVideoContainer {
   width: 140px;
+  margin-top: 45px;
+  position:absolute;
 }
 
 .hideSelfieVideo {
@@ -25,4 +27,51 @@ canvas .hidden {
  margin-top:50px;
  margin-left:10px;
  z-index:10;
+}
+
+#selfieToggleLabel {
+  margin-right:5px;
+}
+
+#selfieToggle {
+  margin-right:10px;
+}
+
+.selfieProgress {
+  height:2px;
+  width:0px;
+  background-color: red;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.selfieProgressContainer {
+  margin-left: 10px;
+}
+
+#selfieToggleLabel {
+  margin-right:2px;
+}
+
+#selfieToggle {
+  margin-right:10px;
+}
+
+.selfieCheckBoxContainer {
+  float:right;
+}
+
+#totallyAwesomeSelfieButton {
+  right: 10px;
+  width: 112px;
+  float:right;
+  margin-left:1px;
+
+}
+
+.octicon.octicon-device-camera {
+  font-size: 20px;
+  margin-right: 5px;
+  line-height: 0px;
+  margin-left:-8px;
 }

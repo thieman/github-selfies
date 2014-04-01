@@ -6,8 +6,13 @@
       x              : 300,
       y              : 200,
       placeVideo   : function (video, canvas) {
-        $('.discussion-timeline-cols').append(video);
-        $('.discussion-timeline-cols').append(canvas);
+        console.log('placing video!!!')
+        $('.form-actions').append(video);
+      },
+      placeCheckBox : function (checkbox, button) {
+        $(checkbox).insertBefore(button);
+        $('.selfieCheckBoxContainer').addClass('newIssueSelfieCheckBoxContainer');
+        $('.selfieProgress').addClass('newIssueSelfieProgress');
       }
     }
     , client = new GitHubSelfies(config);
