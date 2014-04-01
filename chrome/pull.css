@@ -1,0 +1,13 @@
+video {
+  display: inline-block;
+  width: 140px;
+  margin-top: -10px;
+}
+
+.hideSelfieVideo {
+  display: none;
+}
+
+canvas .hidden {
+  display: none;
+}

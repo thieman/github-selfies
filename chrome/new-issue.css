@@ -1,0 +1,28 @@
+#selfieVideo {
+  width: 224px;
+  margin-top: 1px;
+  margin-left:-94px;
+}
+
+.hideSelfieVideo {
+  display: none;
+}
+
+canvas .hidden {
+  display: none;
+}
+
+.selfieVideoContainer {
+  width: 224px;
+  float:right;
+}
+
+.selfieVideoOverlay {
+ position: relative;
+ top:0;
+ left:0;
+ margin-top:50px;
+ margin-left:10px;
+ z-index:10;
+ margin:0 0 0 0;
+}

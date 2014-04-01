@@ -1,17 +1,21 @@
 (function() {
 
-  var client = new GitHubSelfies(
-    ["[name='comment_and_open'][type='submit']",
-     "[name='comment_and_close'][type='submit']",
-     "button:contains(Comment)"],
-    "[name='comment[body]']",
-    "#totallyAwesomeSelfieButton",
-    "#selfieVideo",
-    "#selfieCanvas");
-
-  client.buttonHTML = '<button id="totallyAwesomeSelfieButton" type="button" class="button" onclick="return false;" style="margin-right: 5px;"><span class="octicon octicon-device-camera" style="font-size: 22px; margin-right: 5px; line-height: 0px;"></span>Selfie!</button>';
-  client.videoHTML = '<video autoplay id="selfieVideo" style="display: none;"></video>';
-  client.canvasHTML = '<canvas id="selfieCanvas" style="display: none;"></canvas>';
+  var config = {
+      insertBefore : [
+        '[name="comment_and_open"][type="submit"]',
+        '[name="comment_and_close"][type="submit"]',
+        'button:contains(Comment)'
+      ],
+      bodySelector : '[name="comment[body]"]',
+      buttonHTML   : '<button id="totallyAwesomeSelfieButton" type="button" class="button" onclick="return false;" style="margin-right: 5px;"><span class="octicon octicon-device-camera" style="font-size: 22px; margin-right: 5px; line-height: 0px;"></span>Selfie!</button>',
+      x            : 300,
+      y            : 200,
+      placeVideo   : function (video, canvas) {
+        $($('.discussion-sidebar-item')[$('.discussion-sidebar-item').length - 1]).prepend(video);
+        $($('.discussion-sidebar-item')[$('.discussion-sidebar-item').length - 1]).prepend(canvas);
+      }
+    }
+    , client = new GitHubSelfies(config);
 
   client.setupSelfieStream();
 
@@ -32,5 +36,7 @@
 
   $('[name="comment_and_open"]').on('click', cleanup);
   $('[name="comment_and_close"]').on('click', cleanup);
+
+  return client;
 
 })();
