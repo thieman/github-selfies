@@ -1,12 +1,7 @@
-video {
-  display: inline-block;
-  width: 140px;
-  margin-top: -10px;
-  z-index: 0;
-}
-
-.selfieVideoContainer {
-  width: 140px;
+#selfieVideo {
+  width: 247px;
+  margin-top: 6px;
+  margin-left:-94px;
 }
 
 .hideSelfieVideo {
@@ -17,6 +12,11 @@ canvas .hidden {
   display: none;
 }
 
+.selfieVideoContainer {
+  width: 100%;
+  float:right;
+}
+
 .selfieVideoOverlay {
  position: relative;
  top:0;
@@ -25,4 +25,50 @@ canvas .hidden {
  margin-left:10px;
  z-index:10;
  margin:0 0 0 0;
+}
+
+#js-new-comment-form-actions.expand {
+  height:226px;
+}
+
+#js-new-comment-form-actions.expandSome {
+  height:50px;
+}
+
+.selfieProgressContainer {
+  width:100%;
+  position:absolute;
+  margin-top:5px;
+  margin-left:-20px;
+}
+
+.selfieProgress {
+  height:2px;
+  width:0px;
+  margin-left:-23px;
+  background-color: red;
+  float:right;
+}
+
+#selfieToggleLabel {
+  margin-right:5px;
+}
+
+#selfieToggle {
+  margin-right:10px;
+}
+
+.selfieCheckBoxContainer {
+  margin-left:446px;
+  float:left;
+}
+
+#totallyAwesomeSelfieButton {
+  margin-right: 5px;
+}
+
+.octicon.octicon-device-camera {
+  font-size: 22px;
+  margin-right: 5px;
+  line-height: 0px;
 }
