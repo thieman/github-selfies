@@ -60,3 +60,13 @@ canvas .hidden {
   margin-left: 6px;
   margin-top: 10px;
 }
+
+#totallyAwesomeSelfieButton {
+  margin-right: 5px;
+}
+
+.octicon.octicon-device-camera {
+  font-size: 22px;
+  margin-right: 5px;
+  line-height: 0px;
+}

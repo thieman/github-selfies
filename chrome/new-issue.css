@@ -13,8 +13,13 @@ canvas .hidden {
 }
 
 .selfieVideoContainer {
-  width: 224px;
+  width: 224px !important;
   float:right;
+}
+
+.selfieProgressContainer {
+  width:247px !important;
+  margin-left:-23px !important;
 }
 
 .selfieVideoOverlay {
@@ -42,7 +47,16 @@ canvas .hidden {
 div.selfieProgress.newIssueSelfieProgress {
   height:2px;
   width:0px;
-  margin-right:48px;
   background-color: red;
   float:right;
+}
+
+#totallyAwesomeSelfieButton {
+  margin-right: 5px;
+}
+
+.octicon.octicon-device-camera {
+  font-size: 22px;
+  margin-right: 5px;
+  line-height: 0px;
 }
