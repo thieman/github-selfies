@@ -1,4 +1,3 @@
-// function GitHubSelfies(insertBefore, bodySelector, buttonSelector, videoSelector, canvasSelector, buttonHTML, videoHTML, canvasHTML) {
 function GitHubSelfies(config) {
 
   var stream;
@@ -38,33 +37,42 @@ function GitHubSelfies(config) {
       }
       candidate = null;
     }
-    if (candidate === null) {
-      return setTimeout(function() { setupStream(); }, 250);
-    }
-    $(config.buttonHTML).insertBefore(candidate);
-    if (typeof config.placeVideo === 'function') {
-      config.placeVideo(config.videoHTML);
-    }
+    if (candidate === null) { return setTimeout(function() { setupStream(); }, 250); }
     else {
-      $(config.videoHTML ).insertBefore(config.buttonSelector);
+      placeVideo();
+      placeButton(candidate);
+      placeCheckBox();
+      setupEvents();
+      config.setupComplete = true;
     }
-    if (typeof config.placeCheckBox === 'function') { config.placeCheckBox(config.checkboxHTML, config.buttonSelector); }
-    else {
-      $(config.checkboxHTML).insertBefore(config.buttonSelector);
-    }
-    $(config.buttonSelector).on('click', addSelfie);
-    $(config.buttonSelector).hover(startVideo, stopVideo);
+  };
 
+  function placeVideo () {
+    if (typeof config.placeVideo === 'function') { config.placeVideo(config.videoHTML); }
+    else { $(config.videoHTML ).insertBefore(config.buttonSelector); }
+  }
+
+  function placeCheckBox () {
+    if (typeof config.placeCheckBox === 'function') { config.placeCheckBox(config.checkboxHTML, config.buttonSelector); }
+    else { $(config.checkboxHTML).insertBefore(config.buttonSelector); }
+  }
+
+  function placeButton (candidate) {
+    $(config.buttonHTML).insertBefore(candidate);
+  }
+
+  function setupEvents () {
+    $(config.buttonSelector).on('click', addSelfie);
+    $(config.buttonSelector).hover(startVideo/*, stopVideo*/);
     $('.write-tab').on('click',   showElements);
     $('.preview-tab').on('click', hideElements);
-
-    config.setupComplete = true;
-  };
+  }
 
   function resizeCanvasElement () {
     var video = document.querySelector(config.videoSelector);
-    $(config.canvasSelector).attr('height', video.videoHeight);
-    $(config.canvasSelector).attr('width', video.videoWidth);
+    $(config.canvasSelector)
+      .attr('height', video.videoHeight / 3)
+      .attr('width',  video.videoWidth / 3);
   }
 
   function addSelfie (client) {
@@ -112,7 +120,7 @@ function GitHubSelfies(config) {
 
     clock = setInterval(function () {
       var videoWidth  = $(video).width()
-        , totalFrames = 7
+        , totalFrames = 20
         , binaryGif
         , dataUrl;
 
@@ -125,7 +133,7 @@ function GitHubSelfies(config) {
         $('.selfieProgress').css('width', 0);
       }
       else {
-        ctx.drawImage(video, 0, 0);
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth / 3, video.videoHeight / 3);
         encoder.addFrame(ctx);
         frame++;
         $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
@@ -134,7 +142,6 @@ function GitHubSelfies(config) {
   }
 
   function uploadSelfie (imageData, successCb, errorCb) {
-
     $.ajax({
       url  : 'https://api.imgur.com/3/upload',
       type : 'POST',
@@ -183,9 +190,7 @@ function GitHubSelfies(config) {
   function startVideo () {
     $('.selfieVideoOverlay').text('Fetching camera stream...');
     $(config.buttonSelector).attr('disabled', 'disabled');
-    if (typeof config.preVideoStart === 'function') {
-      config.preVideoStart();
-    }
+    if (typeof config.preVideoStart === 'function') { config.preVideoStart(); }
     navigator.webkitGetUserMedia({video: true}, function(_stream) {
       var video;
       $(config.buttonSelector).removeAttr('disabled');
@@ -194,9 +199,7 @@ function GitHubSelfies(config) {
       video  = document.querySelector(config.videoSelector);
       stream = _stream;
       $(config.videoSelector).attr('src', window.URL.createObjectURL(stream));
-      if (typeof config.postVideoStart === 'function') {
-        config.postVideoStart();
-      }
+      if (typeof config.postVideoStart === 'function') { config.postVideoStart(); }
     });
   }
 
@@ -204,9 +207,7 @@ function GitHubSelfies(config) {
     $(config.videoSelector).addClass('hideSelfieVideo');
     stream.stop();
     stream = null;
-    if (typeof config.postVideoStop === 'function') {
-      config.postVideoStop();
-    }
+    if (typeof config.postVideoStop === 'function') { config.postVideoStop(); }
   }
 
   function hideElements () {

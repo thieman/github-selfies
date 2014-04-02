@@ -6,10 +6,13 @@
         '[name="comment_and_close"][type="submit"]',
         'button:contains(Comment)'
       ],
-      bodySelector   : '[name="comment[body]"]',
-      buttonHTML     : '<button id="totallyAwesomeSelfieButton" type="button" class="button" onclick="return false;" style="margin-right: 5px;"><span class="octicon octicon-device-camera" style="font-size: 22px; margin-right: 5px; line-height: 0px;"></span>Selfie!</button>',
-      x              : 300,
-      y              : 200,
+      bodySelector : '[name="comment[body]"]',
+      buttonHTML   : (
+        '<button id="totallyAwesomeSelfieButton" type="button" class="button">' +
+          '<span class="octicon octicon-device-camera"></span>' +
+          'Selfie!' +
+        '</button>'
+      ),
       placeVideo     : function (video) { $('#js-new-comment-form-actions').append(video); },
       preVideoStart  : function () { $('#js-new-comment-form-actions').addClass('expandSome'); },
       postVideoStart : function () {
@@ -17,7 +20,7 @@
           .removeClass('expandSome')
           .addClass('expand');
       },
-      postVideoStop  : function () { $('#js-new-comment-form-actions').removeClass('expand'); }
+      postVideoStop : function () { $('#js-new-comment-form-actions').removeClass('expand'); }
 
     }
     , client = new GitHubSelfies(config);
