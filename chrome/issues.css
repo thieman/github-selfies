@@ -1,6 +1,6 @@
 #selfieVideo {
-  width: 247px;
-  margin-top: 6px;
+  width: 224px;
+  margin-top: 1px;
   margin-left:-94px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
@@ -16,8 +16,11 @@ canvas .hidden {
 }
 
 .selfieVideoContainer {
-  width: 100%;
-  float:right;
+  display: inline-block;
+  width: auto;
+  vertical-align: top;
+  margin-right: 10px;
+  margin-top: -8px;
 }
 
 .selfieVideoOverlay {
@@ -39,16 +42,13 @@ canvas .hidden {
 }
 
 .selfieProgressContainer {
-  width:100%;
-  position:absolute;
-  margin-top:5px;
-  margin-left:-20px;
+  width: 224px !important;
+  margin-left:-23px !important;
 }
 
 .selfieProgress {
   height:2px;
   width:0px;
-  margin-left:-23px;
   background-color: red;
 }
 
@@ -57,6 +57,7 @@ canvas .hidden {
 }
 
 #selfieToggle {
+  width: 55px;
   margin-right:10px;
 }
 
