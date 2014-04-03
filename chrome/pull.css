@@ -2,6 +2,9 @@
   width: 247px;
   margin-top: 6px;
   margin-left:-94px;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
 }
 
 .hideSelfieVideo {

@@ -4,6 +4,9 @@ video {
   margin-top: -10px;
   margin-left: 10px;
   z-index: 0;
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
 }
 
 .selfieVideoContainer {

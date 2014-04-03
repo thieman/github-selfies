@@ -106,8 +106,12 @@ function GitHubSelfies(config) {
   function staticSelfie (video, canvas, ctx, callback) {
     var imgBinary;
 
+    ctx.save();
+    ctx.translate(video.videoWidth, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth, video.videoHeight);
     imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
+    ctx.restore();
     callback(imgBinary);
   }
 
