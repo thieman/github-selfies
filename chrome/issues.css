@@ -50,7 +50,6 @@ canvas .hidden {
   width:0px;
   margin-left:-23px;
   background-color: red;
-  float:right;
 }
 
 #selfieToggleLabel {
@@ -59,11 +58,6 @@ canvas .hidden {
 
 #selfieToggle {
   margin-right:10px;
-}
-
-.selfieCheckBoxContainer {
-  margin-left:446px;
-  float:left;
 }
 
 #totallyAwesomeSelfieButton {

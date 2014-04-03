@@ -16,13 +16,22 @@ canvas .hidden {
 }
 
 .selfieVideoContainer {
-  width: 224px !important;
-  float:right;
+  display: inline-block;
+  width: auto;
+  vertical-align: top;
+  margin-right: 10px;
+  margin-top: -8px;
 }
 
 .selfieProgressContainer {
-  width:247px !important;
+  width: 224px !important;
   margin-left:-23px !important;
+}
+
+.selfieProgress {
+  height:2px;
+  width:0px;
+  background-color: red;
 }
 
 .selfieVideoOverlay {
@@ -41,10 +50,6 @@ canvas .hidden {
 
 #selfieToggle {
   margin-right:10px;
-}
-
-.selfieCheckBoxContainer.newIssueSelfieCheckBoxContainer {
-  margin-left:346px;
 }
 
 div.selfieProgress.newIssueSelfieProgress {

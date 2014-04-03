@@ -32,19 +32,20 @@
     {
       "js": ["jquery.min.js", "selfie-base.js", "new-issue.js", "b64.js", "GIFEncoder.js", "LZWEncoder.js", "NeuQuant.js"],
       "matches": ["*://github.com/*/issues/new"],
-      "run_at": "document_end",
-      "css": ["new-issue.css"]
+      "run_at": "document_start"
     },
     {
       "js": ["jquery.min.js", "selfie-base.js", "issues.js", "b64.js", "GIFEncoder.js", "LZWEncoder.js", "NeuQuant.js"],
       "matches": ["*://github.com/*/issues/*"],
-      "run_at": "document_end",
-      "css": ["issues.css"]
+      "exclude_matches": ["*://github.com/*/issues/new"],
+      "run_at": "document_start"
     }
   ],
 
   "web_accessible_resources": [
-    "jquery-1.10.1.min.map"
+    "jquery-1.10.1.min.map",
+    "new-issue.css",
+    "issues.css"
   ]
 
 }

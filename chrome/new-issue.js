@@ -1,4 +1,15 @@
 (function() {
+
+  // have to inject CSS since new-issues and issues conflicts and
+  // Chrome doesn't correctly exclude injected CSS using exclude_matches
+  // see http://stackoverflow.com/questions/20784654/excluding-domains-from-content-scripts-in-manifest-json-doesnt-work-for-css-fil
+
+  var link = document.createElement('link');
+  link.href = chrome.extension.getURL('new-issue.css');
+  link.type = 'text/css';
+  link.rel = 'stylesheet';
+  document.documentElement.insertBefore(link);
+
   var config = {
       insertBefore : ['button:contains(Submit new issue)'],
       bodySelector : '#issue_body',
@@ -8,12 +19,7 @@
           'Selfie!' +
         '</button>'
       ),
-      placeVideo    : function (video, canvas) { $('.form-actions').append(video); },
-      placeCheckBox : function (checkbox, button) {
-        $(checkbox).insertBefore(button);
-        $('.selfieCheckBoxContainer').addClass('newIssueSelfieCheckBoxContainer');
-        $('.selfieProgress').addClass('newIssueSelfieProgress');
-      }
+      placeVideo    : function (video, canvas) { $('.form-actions').prepend(video); }
     }
     , client = new GitHubSelfies(config);
   client.setupSelfieStream();
