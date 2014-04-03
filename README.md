@@ -19,7 +19,7 @@ Firefox will constantly ask you to use your webcam by default. To let it always 
 
 ## Awesome contributors
 
-This project is way better now than it was at launch thanks to these people.
+This project is much better now than it was at launch thanks to these people.
 
 Awesome Person | Selfie
 -------------- | ------
