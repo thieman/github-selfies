@@ -9,7 +9,7 @@
       bodySelector : "[name='comment[body]']",
       buttonHTML   : (
         '<button id="totallyAwesomeSelfieButton" type="button" class="button">' +
-          '<span class="octicon octicon-device-camera"></span>' +
+          '<span id="totallyAwesomeSelfieIcon" class="octicon octicon-device-camera"></span>' +
           'Selfie!' +
         '</button>'
       ),

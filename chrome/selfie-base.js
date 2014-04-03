@@ -3,7 +3,7 @@ function GitHubSelfies(config) {
   var stream;
 
   config.buttonSelector   = '#totallyAwesomeSelfieButton';
-  config.checkBoxSelector = '.selfieCheckBoxContainer';
+  config.toggleSelector = '#selfieToggle';
   config.canvasSelector   = '#selfieCanvas';
   config.videoSelector    = '#selfieVideo';
   config.setupComplete    = false;
@@ -12,11 +12,8 @@ function GitHubSelfies(config) {
   config.clientId         = 'cc9df57988494ca';
   config.stream           = null;
 
-  config.checkboxHTML = (
-    '<div class="selfieCheckBoxContainer">' +
-      '<label id="selfieToggleLabel" for="selfieToggle">Gif</label>' +
-      '<input type="checkbox" id="selfieToggle">' +
-    '</div>'
+  config.toggleHTML = (
+    '<button id="selfieToggle" type="button" class="button dark-grey">GIF?</button>'
   );
 
   config.videoHTML = (
@@ -41,7 +38,7 @@ function GitHubSelfies(config) {
     else {
       $('.form-actions-protip').hide();
       placeButton(candidate);
-      placeCheckBox();
+      placeToggle();
       placeVideo();
       setupEvents();
       config.setupComplete = true;
@@ -53,9 +50,9 @@ function GitHubSelfies(config) {
     else { $(config.videoHTML).insertBefore(config.buttonSelector); }
   }
 
-  function placeCheckBox () {
-    if (typeof config.placeCheckBox === 'function') { config.placeCheckBox(config.checkboxHTML, config.buttonSelector); }
-    else { $(config.checkboxHTML).insertBefore(config.buttonSelector); }
+  function placeToggle () {
+    if (typeof config.placeToggle === 'function') { config.placeToggle(config.toggleHTML, config.buttonSelector); }
+    else { $(config.toggleHTML).insertBefore(config.buttonSelector); }
   }
 
   function placeButton (candidate) {
@@ -65,6 +62,7 @@ function GitHubSelfies(config) {
   function setupEvents () {
     $(config.buttonSelector).on('click', addSelfie);
     $(config.buttonSelector).hover(startVideo);
+    $(config.toggleSelector).on('click', toggleDynamicSelfie);
     $('.write-tab').on('click', showElements);
     $('.preview-tab').on('click', hideElements);
   }
@@ -92,7 +90,7 @@ function GitHubSelfies(config) {
   }
 
   function snapSelfie (callback) {
-    dynamic = $('#selfieToggle').is(':checked');
+    dynamic = $('#selfieToggle').hasClass('selected');
     resizeCanvasElement(dynamic);
 
     var video  = document.querySelector(config.videoSelector)
@@ -223,11 +221,29 @@ function GitHubSelfies(config) {
   function hideElements () {
     $(config.videoSelector ).addClass('hideSelfieVideo');
     $(config.buttonSelector).css('display', 'none');
-    $(config.checkBoxSelector).css('display', 'none');
+    $(config.toggleSelector).css('display', 'none');
   }
 
   function showElements () {
-    $(config.checkBoxSelector).css('display', 'inline-block');
+    $(config.toggleSelector).css('display', 'inline-block');
     $(config.buttonSelector).css('display', 'inline-block');
+  }
+
+  function toggleDynamicSelfie() {
+    if ($(config.toggleSelector).hasClass('selected')) {
+      $(config.toggleSelector).removeClass('selected');
+      $(config.toggleSelector).addClass('dark-grey');
+      $(config.toggleSelector).removeClass('primary');
+      $(config.toggleSelector).text('GIF?');
+      $('#totallyAwesomeSelfieIcon').removeClass('octicon-device-camera-video');
+      $('#totallyAwesomeSelfieIcon').addClass('octicon-device-camera');
+    } else {
+      $(config.toggleSelector).addClass('selected');
+      $(config.toggleSelector).removeClass('dark-grey');
+      $(config.toggleSelector).addClass('primary');
+      $(config.toggleSelector).text('GIF!');
+      $('#totallyAwesomeSelfieIcon').removeClass('octicon-device-camera');
+      $('#totallyAwesomeSelfieIcon').addClass('octicon-device-camera-video');
+    }
   }
 }

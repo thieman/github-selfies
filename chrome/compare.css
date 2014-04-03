@@ -1,8 +1,8 @@
 video {
   display: inline-block;
-  width: 140px;
+  width: 120px;
   margin-top: -10px;
-  margin-left: 10px;
+  margin-left: 20px;
   z-index: 0;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
@@ -10,8 +10,8 @@ video {
 }
 
 .selfieVideoContainer {
-  width: 140px;
-  margin-top: 45px;
+  width: 120px;
+  margin-top: 20px;
   position:absolute;
 }
 
@@ -65,14 +65,11 @@ canvas .hidden {
 }
 
 #totallyAwesomeSelfieButton {
-  right: 10px;
-  width: 112px;
-  float:right;
-  margin-left:1px;
-
+  width: 90px;
+  margin-left: 1px;
 }
 
-.octicon.octicon-device-camera {
+#totallyAwesomeSelfieIcon {
   font-size: 20px;
   margin-right: 5px;
   line-height: 0px;
