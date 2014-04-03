@@ -40,9 +40,9 @@ function GitHubSelfies(config) {
     if (candidate === null) { return setTimeout(function() { setupStream(); }, 250); }
     else {
       $('.form-actions-protip').hide();
-      placeVideo();
       placeButton(candidate);
       placeCheckBox();
+      placeVideo();
       setupEvents();
       config.setupComplete = true;
     }
@@ -50,7 +50,7 @@ function GitHubSelfies(config) {
 
   function placeVideo () {
     if (typeof config.placeVideo === 'function') { config.placeVideo(config.videoHTML); }
-    else { $(config.videoHTML ).insertBefore(config.buttonSelector); }
+    else { $(config.videoHTML).insertBefore(config.buttonSelector); }
   }
 
   function placeCheckBox () {
