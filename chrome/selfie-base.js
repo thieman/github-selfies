@@ -139,8 +139,12 @@ function GitHubSelfies(config) {
         $('.selfieProgress').css('width', 0);
       }
       else {
+        ctx.save();
+        ctx.translate(video.videoWidth / 3, 0);
+        ctx.scale(-1, 1);
         ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth / 3, video.videoHeight / 3);
         encoder.addFrame(ctx);
+        ctx.restore();
         frame++;
         $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
       }
