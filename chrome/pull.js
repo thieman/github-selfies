@@ -13,7 +13,7 @@
           'Selfie!' +
         '</button>'
       ),
-      placeVideo     : function (video) { $('#js-new-comment-form-actions').append(video); },
+      placeVideo     : function (video) { $('#js-new-comment-form-actions').prepend(video); },
       preVideoStart  : function () { $('#js-new-comment-form-actions').addClass('expandSome'); },
       postVideoStart : function () {
         $('#js-new-comment-form-actions')
