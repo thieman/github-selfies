@@ -31,7 +31,7 @@ function GitHubSelfies(config) {
   this.setupSelfieStream = function setupStream () {
     var candidate;
     for (var i = 0; i < config.insertBefore.length; i++) {
-      candidate = config.insertBefore[i];
+      candidate = config.insertBefore[i] + ':visible';
       if ($(candidate).length !== 0) {
         break;
       }
@@ -39,6 +39,7 @@ function GitHubSelfies(config) {
     }
     if (candidate === null) { return setTimeout(function() { setupStream(); }, 250); }
     else {
+      $('.form-actions-protip').hide();
       placeVideo();
       placeButton(candidate);
       placeCheckBox();
@@ -63,16 +64,16 @@ function GitHubSelfies(config) {
 
   function setupEvents () {
     $(config.buttonSelector).on('click', addSelfie);
-    $(config.buttonSelector).hover(startVideo/*, stopVideo*/);
-    $('.write-tab').on('click',   showElements);
+    $(config.buttonSelector).hover(startVideo);
+    $('.write-tab').on('click', showElements);
     $('.preview-tab').on('click', hideElements);
   }
 
-  function resizeCanvasElement () {
+  function resizeCanvasElement (dynamic) {
     var video = document.querySelector(config.videoSelector);
     $(config.canvasSelector)
-      .attr('height', video.videoHeight / 3)
-      .attr('width',  video.videoWidth / 3);
+      .attr('height', video.videoHeight / (dynamic ? 3 : 1))
+      .attr('width',  video.videoWidth / (dynamic ? 3 : 1));
   }
 
   function addSelfie (client) {
@@ -91,20 +92,21 @@ function GitHubSelfies(config) {
   }
 
   function snapSelfie (callback) {
-    resizeCanvasElement();
+    dynamic = $('#selfieToggle').is(':checked');
+    resizeCanvasElement(dynamic);
 
     var video  = document.querySelector(config.videoSelector)
       , canvas = document.querySelector(config.canvasSelector)
       , ctx    = canvas.getContext('2d');
 
-    if ($('#selfieToggle').is(':checked')) { dynamicSelfie(video, canvas, ctx, callback); }
+    if (dynamic) { dynamicSelfie(video, canvas, ctx, callback); }
     else { staticSelfie(video, canvas, ctx, callback); }
   }
 
   function staticSelfie (video, canvas, ctx, callback) {
     var imgBinary;
 
-    ctx.drawImage(video, 0, 0);
+    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth, video.videoHeight);
     imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
     callback(imgBinary);
   }
