@@ -1,7 +1,7 @@
 (function() {
   var config = {
       insertBefore : ['.composer-submit'],
-      bodySelector : '#pull_request_body',
+      bodySelector : '[name="pull_request[body]"]',
       buttonHTML   : (
         '<div class="selfieButtonContainer">' +
           '<button id="totallyAwesomeSelfieButton" type="button" class="button">' +
