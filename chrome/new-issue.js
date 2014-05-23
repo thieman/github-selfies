@@ -12,7 +12,7 @@
 
   var config = {
       insertBefore : ['button:contains(Submit new issue)'],
-      bodySelector : '#issue_body',
+      bodySelector : '[id^=issue_body]',
       buttonHTML   : (
         '<button id="totallyAwesomeSelfieButton" type="button" class="button">' +
           '<span id="totallyAwesomeSelfieIcon" class="octicon octicon-device-camera"></span>' +
