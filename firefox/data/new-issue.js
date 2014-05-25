@@ -2,7 +2,7 @@
 
   var client = new GitHubSelfies(
     ["button:contains(Submit new issue)"],
-    "#issue_body",
+    "[id^=issue_body]",
     "#totallyAwesomeSelfieButton",
     "#selfieVideo",
     "#selfieCanvas");
