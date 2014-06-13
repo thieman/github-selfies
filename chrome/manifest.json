@@ -12,7 +12,6 @@
   },
 
   "permissions": [
-    "management",
     "webRequest",
     "webRequestBlocking",
     "https://github.com/*",
