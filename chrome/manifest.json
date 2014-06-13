@@ -12,9 +12,17 @@
   },
 
   "permissions": [
+    "management",
+    "webRequest",
+    "webRequestBlocking",
     "https://github.com/*",
     "http://github.com/*"
   ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
 
   "content_scripts": [
     {
