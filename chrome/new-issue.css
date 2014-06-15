@@ -69,3 +69,19 @@ div.selfieProgress.newIssueSelfieProgress {
   margin-right: 5px;
   line-height: 0px;
 }
+
+.counter-container {
+  padding-left: 64px;
+  float: left;
+  position: absolute;
+}
+
+.count {
+  position: relative;
+  float: left;
+  z-index: 999;
+  margin-top: 45px;
+  font-size: 75px;
+  text-shadow: -1px -1px 1px #999, 1px 1px 1px #222;
+  color: #fff;
+}

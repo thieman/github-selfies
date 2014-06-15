@@ -19,7 +19,10 @@ function GitHubSelfies(config) {
   config.videoHTML = (
     '<div class="selfieVideoContainer">' +
       '<div class="selfieProgressContainer"><div class="selfieProgress"></div></div>' +
-      '<video autoplay id="selfieVideo" class="hideSelfieVideo"></video>' +
+      '<div class="selfie-countdown">' +
+        '<div class="counter-container"></div>' +
+        '<video autoplay id="selfieVideo" class="hideSelfieVideo"></video>' +
+      '</div>' +
       '<p class="selfieVideoOverlay"></p>' +
       '<canvas id="selfieCanvas" class="hidden"></canvas>' +
     '</div>'
@@ -97,56 +100,79 @@ function GitHubSelfies(config) {
       , canvas = document.querySelector(config.canvasSelector)
       , ctx    = canvas.getContext('2d');
 
-    if (dynamic) { dynamicSelfie(video, canvas, ctx, callback); }
-    else { staticSelfie(video, canvas, ctx, callback); }
+    if (dynamic) { selfieCountdown(dynamicSelfie(video, canvas, ctx, callback)); }
+    else { selfieCountdown(staticSelfie(video, canvas, ctx, callback)); }
+  }
+
+  function selfieCountdown (callback) {
+    var countdown = $('.counter-container')
+      , count     = 3
+
+      , counter = setInterval(function () {
+          if (count) {
+            console.log(count)
+            count -= 1
+            $('.count').text(count)
+          }
+          else {
+            clearInterval(counter)
+            countdown.text('')
+            callback()
+          }
+        }, 1000)
+    countdown.append('<h3 class="count">' + count + '</h3>')
   }
 
   function staticSelfie (video, canvas, ctx, callback) {
-    var imgBinary;
+    return function () {
+      var imgBinary;
 
-    ctx.save();
-    ctx.translate(video.videoWidth, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth, video.videoHeight);
-    imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
-    ctx.restore();
-    callback(imgBinary);
+      ctx.save();
+      ctx.translate(video.videoWidth, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth, video.videoHeight);
+      imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
+      ctx.restore();
+      callback(imgBinary);
+    }
   }
 
   function dynamicSelfie (video, canvas, ctx, callback) {
-    var encoder = new GIFEncoder()
-      , frame   = 0
-      , clock;
+    return function () {
+      var encoder = new GIFEncoder()
+        , frame   = 0
+        , clock;
 
-    encoder.setRepeat(0);
-    encoder.setDelay(config.interval);
-    encoder.start();
+      encoder.setRepeat(0);
+      encoder.setDelay(config.interval);
+      encoder.start();
 
-    clock = setInterval(function () {
-      var videoWidth  = $(video).width()
-        , totalFrames = 20
-        , binaryGif
-        , dataUrl;
+      clock = setInterval(function () {
+        var videoWidth  = $(video).width()
+          , totalFrames = 20
+          , binaryGif
+          , dataUrl;
 
-      if (frame >= totalFrames) {
-        encoder.finish();
-        binaryGif = encoder.stream().getData();
-        dataUrl   = 'data:image/gif;base64,'+ encode64(binaryGif);
-        callback(encode64(binaryGif));
-        clearInterval(clock);
-        $('.selfieProgress').css('width', 0);
-      }
-      else {
-        ctx.save();
-        ctx.translate(video.videoWidth / 3, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth / 3, video.videoHeight / 3);
-        encoder.addFrame(ctx);
-        ctx.restore();
-        frame++;
-        $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
-      }
-    }, config.interval);
+        if (frame >= totalFrames) {
+          encoder.finish();
+          binaryGif = encoder.stream().getData();
+          dataUrl   = 'data:image/gif;base64,'+ encode64(binaryGif);
+          callback(encode64(binaryGif));
+          clearInterval(clock);
+          $('.selfieProgress').css('width', 0);
+        }
+        else {
+          ctx.save();
+          ctx.translate(video.videoWidth / 3, 0);
+          ctx.scale(-1, 1);
+          ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth / 3, video.videoHeight / 3);
+          encoder.addFrame(ctx);
+          ctx.restore();
+          frame++;
+          $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
+        }
+      }, config.interval);
+    }
   }
 
   function uploadSelfie (imageData, successCb, errorCb) {
