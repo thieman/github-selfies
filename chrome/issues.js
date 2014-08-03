@@ -23,14 +23,14 @@
           'Selfie!' +
         '</button>'
       ),
-      placeVideo     : function (video) { $('#js-new-comment-form-actions').prepend(video); },
-      preVideoStart  : function () { $('#js-new-comment-form-actions').addClass('expandSome'); },
+      placeVideo     : function (video) { $('#partial-new-comment-form-actions').prepend(video); },
+      preVideoStart  : function () { $('#partial-new-comment-form-actions').addClass('expandSome'); },
       postVideoStart : function () {
-        $('#js-new-comment-form-actions')
+        $('#partial-new-comment-form-actions')
           .removeClass('expandSome')
           .addClass('expand');
       },
-      postVideoStop : function () { $('#js-new-comment-form-actions').removeClass('expand'); }
+      postVideoStop : function () { $('#partial-new-comment-form-actions').removeClass('expand'); }
     }
     , client = new GitHubSelfies(config);
 
