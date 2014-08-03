@@ -29,6 +29,7 @@ function GitHubSelfies(config) {
   );
 
   this.setupSelfieStream = function setupStream () {
+    console.log('fire');
     var candidate;
     for (var i = 0; i < config.insertBefore.length; i++) {
       candidate = config.insertBefore[i] + ':visible';
