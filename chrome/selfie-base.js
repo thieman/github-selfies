@@ -29,7 +29,6 @@ function GitHubSelfies(config) {
   );
 
   this.setupSelfieStream = function setupStream () {
-    console.log('fire');
     var candidate;
     for (var i = 0; i < config.insertBefore.length; i++) {
       candidate = config.insertBefore[i] + ':visible';
@@ -111,17 +110,16 @@ function GitHubSelfies(config) {
 
       , counter = setInterval(function () {
           if (count) {
-            console.log(count)
-            count -= 1
-            $('.count').text(count)
+            count -= 1;
+            $('.count').text(count);
           }
           else {
-            clearInterval(counter)
-            countdown.text('')
-            callback()
+            clearInterval(counter);
+            countdown.text('');
+            callback();
           }
-        }, 1000)
-    countdown.append('<h3 class="count">' + count + '</h3>')
+      }, 1000);
+    countdown.append('<h3 class="count">' + count + '</h3>');
   }
 
   function staticSelfie (video, canvas, ctx, callback) {
@@ -135,7 +133,7 @@ function GitHubSelfies(config) {
       imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
       ctx.restore();
       callback(imgBinary);
-    }
+    };
   }
 
   function dynamicSelfie (video, canvas, ctx, callback) {
@@ -173,7 +171,7 @@ function GitHubSelfies(config) {
           $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
         }
       }, config.interval);
-    }
+    };
   }
 
   function uploadSelfie (imageData, successCb, errorCb) {
