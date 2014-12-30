@@ -8,7 +8,7 @@
   link.href = chrome.extension.getURL('issues.css');
   link.type = 'text/css';
   link.rel = 'stylesheet';
-  document.documentElement.insertBefore(link);
+  document.documentElement.appendChild(link);
 
   var config = {
       insertBefore : [
