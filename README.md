@@ -9,7 +9,7 @@ Add selfies to your pull requests and comments on GitHub!
 
 #### Firefox Note ####
 
-Firefox will constantly ask you to use your webcam by default. To let it always use your webcam, do the following:
+Firefox will constantly ask you to use your webcam by default. To let it always use your webcam, do the following. **NB**: This may allow *all* sites to use your webcam indiscriminately.
 
 1. Type "about:config" in your address bar and hit Enter.
 2. Search for "media.navigator.permission.disabled"
