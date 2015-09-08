@@ -13,7 +13,7 @@ function GitHubSelfies(config) {
   config.stream           = null;
 
   config.toggleHTML = (
-    '<button id="selfieToggle" type="button" class="button dark-grey">GIF?</button>'
+    '<button id="selfieToggle" type="button" class="button dark-grey">Video instead</button>'
   );
 
   config.videoHTML = (
@@ -65,6 +65,7 @@ function GitHubSelfies(config) {
   function setupEvents () {
     $(config.buttonSelector).on('click', addSelfie);
     $(config.buttonSelector).hover(startVideo);
+    setTimeout(startVideo, 500);
     $(config.toggleSelector).on('click', toggleDynamicSelfie);
     $('.write-tab').on('click', showElements);
     $('.preview-tab').on('click', hideElements);
@@ -225,13 +226,12 @@ function GitHubSelfies(config) {
     $(config.buttonSelector).attr('disabled', 'disabled');
     if (typeof config.preVideoStart === 'function') { config.preVideoStart(); }
     navigator.webkitGetUserMedia({video: true}, function(_stream) {
-      var video;
       $(config.buttonSelector).removeAttr('disabled');
       $('.selfieVideoOverlay').text('');
       $(config.videoSelector).removeClass('hideSelfieVideo');
-      video  = document.querySelector(config.videoSelector);
+      var video = document.querySelector(config.videoSelector);
       stream = _stream;
-      $(config.videoSelector).attr('src', window.URL.createObjectURL(stream));
+      video.src = window.URL.createObjectURL(_stream);;
       if (typeof config.postVideoStart === 'function') { config.postVideoStart(); }
     }, function() {});
   }
@@ -259,14 +259,14 @@ function GitHubSelfies(config) {
       $(config.toggleSelector).removeClass('selected');
       $(config.toggleSelector).addClass('dark-grey');
       $(config.toggleSelector).removeClass('primary');
-      $(config.toggleSelector).text('GIF?');
+      $(config.toggleSelector).text('Video instead');
       $('#totallyAwesomeSelfieIcon').removeClass('octicon-device-camera-video');
       $('#totallyAwesomeSelfieIcon').addClass('octicon-device-camera');
     } else {
       $(config.toggleSelector).addClass('selected');
       $(config.toggleSelector).removeClass('dark-grey');
       $(config.toggleSelector).addClass('primary');
-      $(config.toggleSelector).text('GIF!');
+      $(config.toggleSelector).text('Photo instead');
       $('#totallyAwesomeSelfieIcon').removeClass('octicon-device-camera');
       $('#totallyAwesomeSelfieIcon').addClass('octicon-device-camera-video');
     }

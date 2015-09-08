@@ -1,5 +1,4 @@
-(function() {
-
+$(document).on('ready', function() {
   var config = {
       insertBefore : [
         '[name="comment_and_open"][type="submit"]',
@@ -13,7 +12,7 @@
           'Selfie!' +
         '</button>'
       ),
-      placeVideo     : function (video) { $('#partial-new-comment-form-actions').prepend(video); },
+      placeVideo     : function (video) { $('#partial-new-comment-form-actions').append(video); },
       preVideoStart  : function () { $('#partial-new-comment-form-actions').addClass('expandSome'); },
       postVideoStart : function () {
         $('#partial-new-comment-form-actions')
@@ -21,7 +20,6 @@
           .addClass('expand');
       },
       postVideoStop : function () { $('#partial-new-comment-form-actions').removeClass('expand'); }
-
     }
     , client = new GitHubSelfies(config);
 
@@ -44,4 +42,4 @@
 
   $('[name="comment_and_open"]').on('click', cleanup);
   $('[name="comment_and_close"]').on('click', cleanup);
-})();
+});

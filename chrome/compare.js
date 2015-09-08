@@ -1,4 +1,4 @@
-(function() {
+$(document).on('ready', function(){
   var config = {
       insertBefore : ['.composer-submit'],
       bodySelector : '[name="pull_request[body]"]',
