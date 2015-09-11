@@ -65,7 +65,6 @@ function GitHubSelfies(config) {
   function setupEvents () {
     $(config.buttonSelector).on('click', addSelfie);
     $(config.buttonSelector).hover(startVideo);
-    setTimeout(startVideo, 500);
     $(config.toggleSelector).on('click', toggleDynamicSelfie);
     $('.write-tab').on('click', showElements);
     $('.preview-tab').on('click', hideElements);
