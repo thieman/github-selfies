@@ -1,7 +1,6 @@
 #selfieVideo {
   width: 224px;
   margin-top: 1px;
-  margin-left:-94px;
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
@@ -57,7 +56,6 @@ canvas .hidden {
 }
 
 #selfieToggle {
-  width: 55px;
   margin-right: 5px;
 }
 

@@ -1,4 +1,4 @@
-(function() {
+$(document).on('ready', function() {
 
   // have to inject CSS since new-issues and issues conflicts and
   // Chrome doesn't correctly exclude injected CSS using exclude_matches

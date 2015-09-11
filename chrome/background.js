@@ -6,7 +6,7 @@ chrome.webRequest.onHeadersReceived.addListener(function(details) {
 
     if (isCSPHeader(details.responseHeaders[i].name.toUpperCase())) {
       var csp = details.responseHeaders[i].value;
-      csp = csp.replace("media-src 'none'", "media-src 'self'");
+      csp = csp.replace("media-src 'none'", "media-src 'self' blob:");
 
       details.responseHeaders[i].value = csp;
     }
@@ -16,7 +16,7 @@ chrome.webRequest.onHeadersReceived.addListener(function(details) {
     responseHeaders: details.responseHeaders
   };
 }, {
-  urls: ["https://github.com/*"],
+  urls: ["*://github.com/*"],
   types: ["main_frame"]
 }, ["blocking", "responseHeaders"]);
 
