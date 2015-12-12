@@ -23,4 +23,4 @@ $(document).on('ready', function() {
     }
     , client = new GitHubSelfies(config);
   client.setupSelfieStream();
-})();
+});

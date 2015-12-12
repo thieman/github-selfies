@@ -53,4 +53,4 @@ $(document).on('ready', function() {
 
   $('[name="comment_and_open"]').on('click', cleanup);
   $('[name="comment_and_close"]').on('click', cleanup);
-})();
+});

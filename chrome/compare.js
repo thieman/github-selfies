@@ -1,4 +1,4 @@
-$(document).on('ready', function(){
+$(document).on('ready', function() {
   var config = {
       insertBefore : ['.composer-submit'],
       bodySelector : '[name="pull_request[body]"]',
@@ -13,4 +13,4 @@ $(document).on('ready', function(){
     }
     , client = new GitHubSelfies(config);
   client.setupSelfieStream();
-})();
+});
