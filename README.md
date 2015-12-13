@@ -3,13 +3,25 @@ github-selfies
 
 Add selfies to your pull requests and comments on GitHub!
 
-[Get it now on the Chrome Web Store!](https://chrome.google.com/webstore/detail/github-selfies/ldnpkdnkgkogfnahcnldaedcoadjbkbl)
+* [Get it now on the Chrome Web Store!](https://chrome.google.com/webstore/detail/github-selfies/ldnpkdnkgkogfnahcnldaedcoadjbkbl)
+* [Also available for Firefox!](https://addons.mozilla.org/en-US/firefox/addon/github-selfies/)
 
 ![](http://i.imgur.com/ynB5qov.png)
 
-## Firefox
+## Developing
 
-A Firefox version was available at the start of the project but has since become abandonware due to a lack of interest. The code's still in the repo if any intrepid souls should desire to bring it up to speed with the Chrome version.
+First, clone this repository: `git clone https://github.com/thieman/github-selfies`. Then follow the instructions for your given platform. For convenience, you can run `./build.sh` to build and package both the Chrome and Firefox extensions.
+
+### Chrome
+
+1. Enable [Chrome Extensions Developer Mode](https://developer.chrome.com/extensions/faq#faq-dev-01) in Chrome.
+2. In Settings > Extensions click "Load unpacked extension" and select the `chrome/` subfolder of this repository.
+
+### Firefox
+
+1. Install NodeJS.
+2. Install `jpm` (`node install -g jpm`)
+3. Run `jpm run` from within the `firefox/` subfolder of this repository.
 
 ## Awesome contributors
 
