@@ -224,13 +224,23 @@ function GitHubSelfies(config) {
     $('.selfieVideoOverlay').text('Fetching camera stream...');
     $(config.buttonSelector).attr('disabled', 'disabled');
     if (typeof config.preVideoStart === 'function') { config.preVideoStart(); }
-    navigator.webkitGetUserMedia({video: true}, function(_stream) {
+
+    var getUserMedia;
+    if (typeof navigator.webkitGetUserMedia === 'function') {
+      getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
+    } else if (typeof navigator.mozGetUserMedia === 'function') {
+      getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+    } else {
+      getUserMedia = function () { alert("Your browser does not support camera input!"); };
+    }
+
+    getUserMedia({video: true}, function(_stream) {
       $(config.buttonSelector).removeAttr('disabled');
       $('.selfieVideoOverlay').text('');
       $(config.videoSelector).removeClass('hideSelfieVideo');
       var video = document.querySelector(config.videoSelector);
       stream = _stream;
-      video.src = window.URL.createObjectURL(_stream);;
+      video.src = window.URL.createObjectURL(_stream);
       if (typeof config.postVideoStart === 'function') { config.postVideoStart(); }
     }, function() {});
   }

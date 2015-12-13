@@ -4,11 +4,13 @@ $(document).on('ready', function() {
   // Chrome doesn't correctly exclude injected CSS using exclude_matches
   // see http://stackoverflow.com/questions/20784654/excluding-domains-from-content-scripts-in-manifest-json-doesnt-work-for-css-fil
 
-  var link = document.createElement('link');
-  link.href = chrome.extension.getURL('new-issue.css');
-  link.type = 'text/css';
-  link.rel = 'stylesheet';
-  document.getElementsByTagName("head")[0].appendChild(link);
+  if (typeof chrome !== 'undefined') {
+    var link = document.createElement('link');
+    link.href = chrome.extension.getURL('new-issue.css');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    document.getElementsByTagName("head")[0].appendChild(link);
+  }
 
   var config = {
       insertBefore : ['button:contains(Submit new issue)'],

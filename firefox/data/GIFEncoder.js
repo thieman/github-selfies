@@ -1,0 +1,1 @@
+../../chrome/GIFEncoder.js
