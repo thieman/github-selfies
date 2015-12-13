@@ -5,9 +5,11 @@ Add selfies to your pull requests and comments on GitHub!
 
 [Get it now on the Chrome Web Store!](https://chrome.google.com/webstore/detail/github-selfies/ldnpkdnkgkogfnahcnldaedcoadjbkbl)
 
-[Also available for Firefox!](https://addons.mozilla.org/en-US/firefox/addon/github-selfies/)
-
 ![](http://i.imgur.com/ynB5qov.png)
+
+## Firefox
+
+A Firefox version was available at the start of the project but has since become abandonware due to a lack of interest. The code's still in the repo if any intrepid souls should desire to bring it up to speed with the Chrome version.
 
 ## Awesome contributors
 
