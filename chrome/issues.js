@@ -8,7 +8,7 @@ $(document).on('ready', function() {
   link.href = chrome.extension.getURL('issues.css');
   link.type = 'text/css';
   link.rel = 'stylesheet';
-  document.documentElement.appendChild(link);
+  document.getElementsByTagName("head")[0].appendChild(link);
 
   var config = {
       insertBefore : [
@@ -53,4 +53,4 @@ $(document).on('ready', function() {
 
   $('[name="comment_and_open"]').on('click', cleanup);
   $('[name="comment_and_close"]').on('click', cleanup);
-})();
+});

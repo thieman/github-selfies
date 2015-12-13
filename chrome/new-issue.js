@@ -8,7 +8,7 @@ $(document).on('ready', function() {
   link.href = chrome.extension.getURL('new-issue.css');
   link.type = 'text/css';
   link.rel = 'stylesheet';
-  document.documentElement.insertBefore(link);
+  document.getElementsByTagName("head")[0].appendChild(link);
 
   var config = {
       insertBefore : ['button:contains(Submit new issue)'],
@@ -23,4 +23,4 @@ $(document).on('ready', function() {
     }
     , client = new GitHubSelfies(config);
   client.setupSelfieStream();
-})();
+});

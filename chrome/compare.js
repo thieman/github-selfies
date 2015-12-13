@@ -1,6 +1,6 @@
-$(document).on('ready', function(){
+$(document).on('ready', function() {
   var config = {
-      insertBefore : ['.composer-submit'],
+      insertBefore : ['.composer button'],
       bodySelector : '[name="pull_request[body]"]',
       buttonHTML   : (
         '<div class="selfieButtonContainer">' +
@@ -13,4 +13,4 @@ $(document).on('ready', function(){
     }
     , client = new GitHubSelfies(config);
   client.setupSelfieStream();
-})();
+});
