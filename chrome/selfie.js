@@ -46,26 +46,20 @@
     if (!any(allowedPaths, function(path) {
       return path.test(window.location.href); })) {
       // No selfies here!
+      console.log("This path isn't appropriate for selfies.", window.location.href);
       return;
     }
 
     if (document.getElementById('totallyAwesomeSelfieButton')) {
-      //console.log("Already got selfies");
+      console.log("Already got selfies");
       return;
     }
-    //console.log("Adding selfies to:", window.location.href);
+    console.log("Adding selfies to:", window.location.href);
 
-    var config = {
-      insertBefore : ['.form-actions .btn-primary'],
-      bodySelector : '[id^=issue_body]',
-      buttonHTML   : (
-        '<button id="totallyAwesomeSelfieButton" type="button" class="btn btn-default">' +
-          '<span id="totallyAwesomeSelfieIcon" class="octicon octicon-device-camera"></span>' +
-          'Selfie!' +
-          '</button>'
-      ),
-      placeVideo    : function (video, canvas) { $('.form-actions').prepend(video); }
-    }, client = new GitHubSelfies(config);
+    var client = new GitHubSelfies({
+      insertBefore: ['.timeline-new-comment .form-actions .btn-primary'],
+      bodySelector: '[id^=issue_body]'
+    });
     client.setupSelfieStream();
   }
 
@@ -76,8 +70,8 @@
       addSelfies();
     }
   });
-  //console.log('Selfie loaded!');
   window.addEventListener("popstate", addSelfies);
   addSelfies();
 
+  console.log('Selfie loaded!');
 })();

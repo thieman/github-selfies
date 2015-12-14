@@ -1,0 +1,11 @@
+.github-selfies--selfieControls {
+    float: left;
+}
+
+.github-selfies--hidden {
+    display: none;
+}
+
+.github-selfies--selfieVideoContainer video {
+    background: black;
+}

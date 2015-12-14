@@ -1,83 +1,96 @@
 function GitHubSelfies(config) {
-  var stream;
+  var stream = null;
 
-  config.buttonSelector = '#totallyAwesomeSelfieButton';
-  config.toggleSelector = '#selfieToggle';
-  config.canvasSelector = '#selfieCanvas';
-  config.videoSelector  = '#selfieVideo';
-  config.setupComplete  = false;
-  config.selfiesTaken   = 0;
-  config.interval       = 100;
-  config.clientId       = 'cc9df57988494ca';
-  config.stream         = null;
+  var buttonSelector = '#totallyAwesomeSelfieButton';
+  var toggleSelector = '#selfieToggle';
+  var canvasSelector = '#selfieCanvas';
+  var videoSelector  = '#selfieVideo';
+  var selfiesTaken   = 0;
+  var interval       = 100;
+  var clientId       = 'cc9df57988494ca';
+  var hiddenClass = "github-selfies--hidden";
 
-  config.toggleHTML = (
-    '<button id="selfieToggle" type="button" class="btn btn-default">Video instead</button>'
-  );
-
-  config.videoHTML = (
-    '<div class="selfieVideoContainer">' +
+  var videoHTML = (
+    '<div class="github-selfies github-selfies--selfieVideoContainer github-selfies--hidden">' +
       '<div class="selfieProgressContainer"><div class="selfieProgress"></div></div>' +
       '<div class="selfie-countdown">' +
         '<div class="counter-container"></div>' +
-        '<video autoplay id="selfieVideo" class="hideSelfieVideo"></video>' +
+        '<video autoplay id="selfieVideo"></video>' +
       '</div>' +
       '<p class="selfieVideoOverlay"></p>' +
       '<canvas id="selfieCanvas" class="hidden"></canvas>' +
     '</div>'
   );
 
-  this.setupSelfieStream = function setupStream () {
+  var buttonsHTML = (
+    '<div class="github-selfies github-selfies--selfieControls">' +
+      '<button id="selfieToggle" type="button" class="btn btn-default">Video instead</button>' +
+      '<button id="totallyAwesomeSelfieButton" type="button" class="btn btn-default">' +
+        '<span class="octicon octicon-device-camera"></span>' +
+        ' Selfie!' +
+      '</button>' +
+    '</div>'
+  );
+
+  // TODO: "close" button
+  // TODO: move status overlay
+
+  // TODO: build component object w/ elems for buttons, video
+
+  this.setupSelfieStream = function setupSelfieStream () {
+    // TODO: gotta clean up previous stuff! close video, etc
     var candidate;
     for (var i = 0; i < config.insertBefore.length; i++) {
       candidate = config.insertBefore[i] + ':visible';
+      console.log("Looking for candidate", candidate, $(candidate));
       if ($(candidate).length !== 0) {
         break;
       }
       candidate = null;
     }
-    if (candidate === null) { return setTimeout(function() { setupStream(); }, 250); }
-    else {
+    if (candidate === null) {
+      setTimeout(function() { setupSelfieStream(); }, 250);
+    } else {
       $('.form-actions-protip').hide();
-      placeButton(candidate);
-      placeToggle();
-      placeVideo();
-      setupEvents();
-      config.setupComplete = true;
+      var buttons = placeButtons(candidate);
+      //placeVideo();
+      setupEvents(buttons);
     }
   };
 
-  function placeVideo () {
-    if (typeof config.placeVideo === 'function') { config.placeVideo(config.videoHTML); }
-    else { $(config.videoHTML).insertBefore(config.buttonSelector); }
+  function placeVideo (buttons) {
+    console.log("Placing video before", buttons);
+    var video = $(videoHTML);
+    video.insertBefore(buttons);
+    return video;
   }
 
-  function placeToggle () {
-    if (typeof config.placeToggle === 'function') { config.placeToggle(config.toggleHTML, config.buttonSelector); }
-    else { $(config.toggleHTML).insertBefore(config.buttonSelector); }
+  function placeButtons (candidate) {
+    console.log("placing buttons before", $(candidate));
+
+    var buttons = $(buttonsHTML);
+    buttons.insertBefore(candidate);
+    return buttons;
   }
 
-  function placeButton (candidate) {
-    $(config.buttonHTML).insertBefore(candidate);
-  }
-
-  function setupEvents () {
-    $(config.buttonSelector).on('click', addSelfie);
-    $(config.buttonSelector).hover(startVideo);
-    $(config.toggleSelector).on('click', toggleDynamicSelfie);
+  function setupEvents (buttons) {
+    buttons.find(buttonSelector)
+      //.on('click', addSelfie) // TODO: new button for this?
+      .on('click', function() { startVideo(buttons); });
+    buttons.find(toggleSelector).on('click', toggleDynamicSelfie);
     $('.write-tab').on('click', showElements);
     $('.preview-tab').on('click', hideElements);
   }
 
   function resizeCanvasElement (dynamic) {
-    var video = document.querySelector(config.videoSelector);
-    $(config.canvasSelector)
+    var video = document.querySelector(videoSelector);
+    $(canvasSelector)
       .attr('height', video.videoHeight / (dynamic ? 3 : 1))
       .attr('width',  video.videoWidth / (dynamic ? 3 : 1));
   }
 
   function addSelfie (client) {
-    var thisSelfieNumber = config.selfiesTaken++;
+    var thisSelfieNumber = selfiesTaken++;
 
     addSelfiePlaceholder(thisSelfieNumber);
     snapSelfie(imageSuccess);
@@ -95,8 +108,8 @@ function GitHubSelfies(config) {
     dynamic = $('#selfieToggle').hasClass('selected');
     resizeCanvasElement(dynamic);
 
-    var video  = document.querySelector(config.videoSelector)
-      , canvas = document.querySelector(config.canvasSelector)
+    var video  = document.querySelector(videoSelector)
+      , canvas = document.querySelector(canvasSelector)
       , ctx    = canvas.getContext('2d');
 
     if (dynamic) { selfieCountdown(dynamicSelfie(video, canvas, ctx, callback)); }
@@ -142,7 +155,7 @@ function GitHubSelfies(config) {
         , clock;
 
       encoder.setRepeat(0);
-      encoder.setDelay(config.interval);
+      encoder.setDelay(interval);
       encoder.start();
 
       clock = setInterval(function () {
@@ -169,7 +182,7 @@ function GitHubSelfies(config) {
           frame++;
           $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
         }
-      }, config.interval);
+      }, interval);
     };
   }
 
@@ -178,7 +191,7 @@ function GitHubSelfies(config) {
       url  : 'https://api.imgur.com/3/upload',
       type : 'POST',
       beforeSend: function (xhr) {
-        xhr.setRequestHeader('Authorization', 'Client-ID ' + config.clientId);
+        xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
       },
       data: {
         type  : 'base64',
@@ -211,17 +224,24 @@ function GitHubSelfies(config) {
   }
 
   function notifyFail () {
-    $(config.videoSelector ).remove();
-    $(config.canvasSelector).remove();
-    $(config.buttonSelector).prop('disabled', true);
-    $(config.buttonSelector).children('span').remove();
-    $(config.buttonSelector).text('Something broke :(');
-    $(config.buttonSelector).addClass('danger');
+    $(videoSelector).remove();
+    $(canvasSelector).remove();
+    $(buttonSelector)
+      .prop('disabled', true)
+      .text('Something broke :(')
+      .addClass('btn-danger')
+      .children('span').remove();
   }
 
-  function startVideo () {
+  function startVideo (buttons) {
+    // TODO: insert video
+    placeVideo(buttons);
+
+// TODO: handle video stream events
+
+    $('.github-selfies--selfieVideoContainer').removeClass(hiddenClass);
     $('.selfieVideoOverlay').text('Fetching camera stream...');
-    $(config.buttonSelector).attr('disabled', 'disabled');
+    $(buttonSelector).prop('disabled', true);
     if (typeof config.preVideoStart === 'function') { config.preVideoStart(); }
 
     var getUserMedia;
@@ -234,49 +254,50 @@ function GitHubSelfies(config) {
     }
 
     getUserMedia({video: true}, function(_stream) {
-      $(config.buttonSelector).removeAttr('disabled');
+      $(buttonSelector).prop('disabled', false);
       $('.selfieVideoOverlay').text('');
-      $(config.videoSelector).removeClass('hideSelfieVideo');
-      var video = document.querySelector(config.videoSelector);
+      $(videoSelector).removeClass(hiddenClass);
+      var video = document.querySelector(videoSelector);
       stream = _stream;
       video.src = window.URL.createObjectURL(_stream);
+      console.log("Video:", video, video.src, stream);
       if (typeof config.postVideoStart === 'function') { config.postVideoStart(); }
-    }, function() {});
+    }, function(e) {
+      if (e.name === 'DevicesNotFoundError') {
+        $(buttonSelector).prop('disabled', false);
+        $('.selfieVideoOverlay').text("You don't have a camera available!");
+        // TODO: no camera connected
+      } else {
+        console.error("Couldn't start selfie video", e);
+        notifyFail();
+      }
+    });
   }
 
   function stopVideo () {
-    $(config.videoSelector).addClass('hideSelfieVideo');
+    $(videoSelector).addClass('hideSelfieVideo');
     stream.stop();
     stream = null;
     if (typeof config.postVideoStop === 'function') { config.postVideoStop(); }
   }
 
   function hideElements () {
-    $(config.videoSelector ).addClass('hideSelfieVideo');
-    $(config.buttonSelector).css('display', 'none');
-    $(config.toggleSelector).css('display', 'none');
+    $('.github-selfies').addClass(hiddenClass);
   }
 
   function showElements () {
-    $(config.toggleSelector).css('display', 'inline-block');
-    $(config.buttonSelector).css('display', 'inline-block');
+    $('.github-selfies').removeClass(hiddenClass);
   }
 
   function toggleDynamicSelfie() {
-    if ($(config.toggleSelector).hasClass('selected')) {
-      $(config.toggleSelector).removeClass('selected');
-      $(config.toggleSelector).addClass('dark-grey');
-      $(config.toggleSelector).removeClass('primary');
-      $(config.toggleSelector).text('Video instead');
-      $('#totallyAwesomeSelfieIcon').removeClass('octicon-device-camera-video');
-      $('#totallyAwesomeSelfieIcon').addClass('octicon-device-camera');
+    var selfieButton = $('#totallyAwesomeSelfieIcon');
+    var toggleButton = $(toggleSelector);
+    if (toggleButton.hasClass('selected')) {
+      toggleButton.text('Video instead');
     } else {
-      $(config.toggleSelector).addClass('selected');
-      $(config.toggleSelector).removeClass('dark-grey');
-      $(config.toggleSelector).addClass('primary');
-      $(config.toggleSelector).text('Photo instead');
-      $('#totallyAwesomeSelfieIcon').removeClass('octicon-device-camera');
-      $('#totallyAwesomeSelfieIcon').addClass('octicon-device-camera-video');
+      toggleButton.text('Photo instead');
     }
+    selfieButton.toggleClass('octicon-device-camera octicon-device-camera-video');
+    toggleButton.toggleClass('selected dark-grey');
   }
 }
