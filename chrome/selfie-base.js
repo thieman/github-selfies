@@ -1,36 +1,229 @@
+// Create a selfie button in the given form.
+function GitHubSelfieButtons() {
+  this.elem = $(
+    '<div class="github-selfies github-selfies--selfieControls">' +
+    '<button type="button" class="selfieToggle btn btn-default">Video instead</button>' +
+    '<button type="button" class="totallyAwesomeSelfieButton btn btn-default">' +
+    '<span class="octicon octicon-device-camera"></span>' +
+    ' Selfie!' +
+    '</button>' +
+    '</div>');
+
+  this.selfieButton = this.elem.find('.totallyAwesomeSelfieButton');
+  this.selfieToggle = this.elem.find('.selfieToggle');
+  this.videoPreview = null;
+  this.dynamic = false; // dynamic == video
+  this.onselfie = function (isDynamic, video, canvas, ctx, callback) {
+  };
+
+  this.selfieButton
+    .on('click', function() {
+      if (this.videoPreview === null) {
+        this.showVideoPreview();
+        this.disableButton();
+        this.videoPreview.startPreview(this);
+      } else {
+        // TODO: change label?
+        this.onselfie(this.dynamic);
+      }
+    }.bind(this));
+  this.selfieToggle.on('click', this.toggleSelfieType);
+}
+
+GitHubSelfieButtons.prototype.insertBefore = function(element) {
+  // Be careful not to insert more than once!
+  this.elem.eq(0).insertBefore(element);
+  return this;
+};
+
+GitHubSelfieButtons.prototype.hide = function() {
+  this.elem.addClass('github-selfies--hidden');
+  return this;
+};
+GitHubSelfieButtons.prototype.show = function() {
+  this.elem.removeClass('github-selfies--hidden');
+  return this;
+};
+
+GitHubSelfieButtons.prototype.destroy = function() {
+  this.elem.remove();
+  this.selfieButton = null;
+  this.selfieToggle = null;
+};
+
+GitHubSelfieButtons.prototype.showVideoPreview = function() {
+  if (this.videoPreview === null) {
+    // Insert the preview before the buttons
+    this.videoPreview = new GitHubSelfieVideoPreview();
+    this.videoPreview.insertBefore(this.elem);
+  }
+  this.videoPreview.show();
+  return this;
+};
+GitHubSelfieButtons.prototype.disableButton = function() {
+  this.selfieButton.prop('disabled', true);
+  return this;
+};
+GitHubSelfieButtons.prototype.enableButton = function() {
+  this.selfieButton.prop('disabled', false);
+  return this;
+};
+
+GitHubSelfieButtons.prototype.hideVideoPreview = function() {
+  if (this.videoPreview !== null) {
+    this.videoPreview.hide();
+    // TODO: destroy??
+  }
+  return this;
+};
+
+GitHubSelfieButtons.prototype.toggleSelfieType = function() {
+  this.selfieToggle.text(this.dynamic ? 'Photo instead' : 'Video instead');
+  this.selfieButton.toggleClass('octicon-device-camera octicon-device-camera-video');
+  this.selfieToggle.toggleClass('selected dark-grey');
+  this.dynamic = !this.dynamic;
+};
+
+
+function GitHubSelfieVideoPreview() {
+  this.elem = $(
+    '<div class="github-selfies github-selfies--selfieVideoContainer github-selfies--hidden">' +
+    '<div class="selfieProgressContainer"><div class="selfieProgress"></div></div>' +
+    '<div class="selfie-countdown">' +
+    '<div class="counter-container"></div>' +
+    '<video autoplay id="selfieVideo"></video>' +
+    '</div>' +
+    '<p class="selfieVideoOverlay"></p>' +
+    '<canvas id="selfieCanvas" class="hidden"></canvas>' +
+    '</div>'
+  );
+
+  this.videoElem = this.elem.find('video').get(0);
+  this.canvasElem = this.elem.find('canvas').get(0);
+  this.textOverlay = this.elem.find('.selfieVideoOverlay');
+  this.counterContainer = this.elem.find('.counter-container');
+  this.stream = null;
+}
+
+GitHubSelfieVideoPreview.prototype.insertBefore = function(element) {
+  // Be careful not to insert more than once!
+  this.elem.eq(0).insertBefore(element);
+  return this;
+};
+
+GitHubSelfieVideoPreview.prototype.resizeCanvas = function(isDynamic) {
+  this.canvasElem.setAttribute('height', this.videoElem.videoHeight / (isDynamic ? 3 : 1));
+  this.canvasElem.setAttribute('width', this.videoElem.videoWidth /  (isDynamic ? 3 : 1));
+  return this;
+};
+
+GitHubSelfieVideoPreview.prototype.hide = function() {
+  this.elem.addClass('github-selfies--hidden');
+  return this;
+};
+GitHubSelfieVideoPreview.prototype.show = function() {
+  this.elem.removeClass('github-selfies--hidden');
+  return this;
+};
+
+GitHubSelfieVideoPreview.prototype.setMessage = function(message) {
+  this.textOverlay.text(message);
+  return this;
+};
+
+GitHubSelfieVideoPreview.prototype.stopPreview = function() {
+  // TODO: destroy??
+  this.stream.stop();
+  this.stream = null;
+};
+
+GitHubSelfieVideoPreview.prototype.destroy = function() {
+  this.stopPreview();
+  this.elem.remove();
+  this.videoElem = null;
+  this.canvasElem = null;
+  this.textOverlay = null;
+  this.counterContainer = null;
+};
+
+GitHubSelfieVideoPreview.prototype.startPreview = function(buttons) {
+  this.setMessage('Fetching camera stream...');
+
+  // TODO: handle video stream events
+  // TODO: gotta clean up previous stuff! close video, etc
+
+  var getUserMedia;
+  if (typeof navigator.webkitGetUserMedia === 'function') {
+    getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
+  } else if (typeof navigator.mozGetUserMedia === 'function') {
+    getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+  } else {
+    getUserMedia = function () { alert("Your browser does not support camera input!"); };
+  }
+
+  getUserMedia({video: true}, function(_stream) {
+    buttons.enableButton();
+    this.setMessage('');
+    this.stream = _stream;
+    this.videoElem.src = window.URL.createObjectURL(_stream);
+    console.log("Video:", this.stream, this.videoElem, this.videoElem.src);
+
+    // this.stream.onended = function(e) { console.info("ended", e); };
+    // this.stream.onactive = function(e) { console.info("active", e); };
+    // this.stream.oninactive = function(e) { console.info("inactive", e); };
+    // TODO stream events
+  }.bind(this), function(e) {
+    if (e.name === 'DevicesNotFoundError') {
+      buttons.enableButton();
+      this.setMessage("You don't have a camera available!");
+    } else {
+      console.error("Couldn't start selfie video", e);
+      this.notifyFail();
+    }
+  }.bind(this));
+};
+
+// TODO
+  function notifyFail () {
+    $(videoSelector).remove();
+    $(canvasSelector).remove();
+    $(buttonSelector)
+      .prop('disabled', true)
+      .text('Something broke :(')
+      .addClass('btn-danger')
+      .children('span').remove();
+  }
+
+GitHubSelfieVideoPreview.prototype.snapSelfie = function(dynamic, takeSelfieCallback, fileCallback) {
+  this.resizeCanvas(dynamic);
+  var ctx = this.canvasElem.getContext('2d');
+  this.selfieCountdown(takeSelfieCallback(this.videoElem, this.canvasElem, ctx, fileCallback));
+};
+
+// TODO: de-classify this
+
+GitHubSelfieVideoPreview.prototype.showCount = function (count, callback) {
+  if (count > 0) {
+    this.counterContainer.html('<h3 class="count">' + count + '</h3>');
+    setTimeout(function() { this.showCount(count - 1, callback); }.bind(this), 1000);
+  } else {
+    this.counterContainer.empty();
+    callback();
+  }
+};
+GitHubSelfieVideoPreview.prototype.selfieCountdown = function(callback) {
+  this.showCount(3, callback);
+};
+
+
+
 function GitHubSelfies(config) {
   var stream = null;
 
-  var buttonSelector = '#totallyAwesomeSelfieButton';
-  var toggleSelector = '#selfieToggle';
-  var canvasSelector = '#selfieCanvas';
-  var videoSelector  = '#selfieVideo';
   var selfiesTaken   = 0;
   var interval       = 100;
   var clientId       = 'cc9df57988494ca';
-  var hiddenClass = "github-selfies--hidden";
-
-  var videoHTML = (
-    '<div class="github-selfies github-selfies--selfieVideoContainer github-selfies--hidden">' +
-      '<div class="selfieProgressContainer"><div class="selfieProgress"></div></div>' +
-      '<div class="selfie-countdown">' +
-        '<div class="counter-container"></div>' +
-        '<video autoplay id="selfieVideo"></video>' +
-      '</div>' +
-      '<p class="selfieVideoOverlay"></p>' +
-      '<canvas id="selfieCanvas" class="hidden"></canvas>' +
-    '</div>'
-  );
-
-  var buttonsHTML = (
-    '<div class="github-selfies github-selfies--selfieControls">' +
-      '<button id="selfieToggle" type="button" class="btn btn-default">Video instead</button>' +
-      '<button id="totallyAwesomeSelfieButton" type="button" class="btn btn-default">' +
-        '<span class="octicon octicon-device-camera"></span>' +
-        ' Selfie!' +
-      '</button>' +
-    '</div>'
-  );
+  var buttons = null;
 
   // TODO: "close" button
   // TODO: move status overlay
@@ -38,12 +231,14 @@ function GitHubSelfies(config) {
   // TODO: build component object w/ elems for buttons, video
 
   this.setupSelfieStream = function setupSelfieStream () {
-    // TODO: gotta clean up previous stuff! close video, etc
+    if (buttons !== null) {
+      // TODO: gotta clean up previous stuff! close video, etc
+    }
+
     var candidate;
     for (var i = 0; i < config.insertBefore.length; i++) {
-      candidate = config.insertBefore[i] + ':visible';
-      console.log("Looking for candidate", candidate, $(candidate));
-      if ($(candidate).length !== 0) {
+      candidate = $(config.insertBefore[i] + ':visible');
+      if (candidate.length !== 0) {
         break;
       }
       candidate = null;
@@ -52,48 +247,31 @@ function GitHubSelfies(config) {
       setTimeout(function() { setupSelfieStream(); }, 250);
     } else {
       $('.form-actions-protip').hide();
-      var buttons = placeButtons(candidate);
-      //placeVideo();
+      buttons = new GitHubSelfieButtons();
+      buttons.insertBefore(candidate);
       setupEvents(buttons);
     }
   };
 
-  function placeVideo (buttons) {
-    console.log("Placing video before", buttons);
-    var video = $(videoHTML);
-    video.insertBefore(buttons);
-    return video;
+  function hideElements () {
+    $('.github-selfies').addClass(hiddenClass);
   }
 
-  function placeButtons (candidate) {
-    console.log("placing buttons before", $(candidate));
-
-    var buttons = $(buttonsHTML);
-    buttons.insertBefore(candidate);
-    return buttons;
+  function showElements () {
+    $('.github-selfies').removeClass(hiddenClass);
   }
 
   function setupEvents (buttons) {
-    buttons.find(buttonSelector)
-      //.on('click', addSelfie) // TODO: new button for this?
-      .on('click', function() { startVideo(buttons); });
-    buttons.find(toggleSelector).on('click', toggleDynamicSelfie);
+    buttons.onselfie = addSelfie;
     $('.write-tab').on('click', showElements);
     $('.preview-tab').on('click', hideElements);
   }
 
-  function resizeCanvasElement (dynamic) {
-    var video = document.querySelector(videoSelector);
-    $(canvasSelector)
-      .attr('height', video.videoHeight / (dynamic ? 3 : 1))
-      .attr('width',  video.videoWidth / (dynamic ? 3 : 1));
-  }
-
-  function addSelfie (client) {
+  function addSelfie (isDynamic) {
     var thisSelfieNumber = selfiesTaken++;
 
     addSelfiePlaceholder(thisSelfieNumber);
-    snapSelfie(imageSuccess);
+    buttons.videoPreview.snapSelfie(isDynamic, isDynamic ? dynamicSelfie : staticSelfie, imageSuccess);
 
     function imageSuccess (_imageData) {
       uploadSelfie(_imageData, success, notifyFail);
@@ -102,36 +280,6 @@ function GitHubSelfies(config) {
     function success (res) {
       replacePlaceholderInBody(thisSelfieNumber, res.data.link);
     }
-  }
-
-  function snapSelfie (callback) {
-    dynamic = $('#selfieToggle').hasClass('selected');
-    resizeCanvasElement(dynamic);
-
-    var video  = document.querySelector(videoSelector)
-      , canvas = document.querySelector(canvasSelector)
-      , ctx    = canvas.getContext('2d');
-
-    if (dynamic) { selfieCountdown(dynamicSelfie(video, canvas, ctx, callback)); }
-    else { selfieCountdown(staticSelfie(video, canvas, ctx, callback)); }
-  }
-
-  function selfieCountdown (callback) {
-    var countdown = $('.counter-container')
-      , count     = 3
-
-      , counter = setInterval(function () {
-          if (count) {
-            count -= 1;
-            $('.count').text(count);
-          }
-          else {
-            clearInterval(counter);
-            countdown.text('');
-            callback();
-          }
-      }, 1000);
-    countdown.append('<h3 class="count">' + count + '</h3>');
   }
 
   function staticSelfie (video, canvas, ctx, callback) {
@@ -150,19 +298,19 @@ function GitHubSelfies(config) {
 
   function dynamicSelfie (video, canvas, ctx, callback) {
     return function () {
-      var encoder = new GIFEncoder()
-        , frame   = 0
-        , clock;
+      var encoder = new GIFEncoder();
+      var frame   = 0;
+      var clock;
 
       encoder.setRepeat(0);
       encoder.setDelay(interval);
       encoder.start();
 
       clock = setInterval(function () {
-        var videoWidth  = $(video).width()
-          , totalFrames = 20
-          , binaryGif
-          , dataUrl;
+        var videoWidth  = $(video).width();
+        var totalFrames = 20;
+        var binaryGif;
+        var dataUrl;
 
         if (frame >= totalFrames) {
           encoder.finish();
@@ -171,8 +319,7 @@ function GitHubSelfies(config) {
           callback(encode64(binaryGif));
           clearInterval(clock);
           $('.selfieProgress').css('width', 0);
-        }
-        else {
+        } else {
           ctx.save();
           ctx.translate(video.videoWidth / 3, 0);
           ctx.scale(-1, 1);
@@ -204,100 +351,25 @@ function GitHubSelfies(config) {
   }
 
   function addSelfiePlaceholder (number) {
-    if ($(config.bodySelector).val() !== '') {
-      $(config.bodySelector).val($(config.bodySelector).val() + '\n');
+    // TODO: too fragile!
+    var textarea = buttons.elem.parent().parent().prev().find('textarea');
+    console.log('textarea', textarea);
+    var currentContents = textarea.val();
+    if (currentContents !== '') {
+      textarea.val(currentContents + '\n');
     }
-    $(config.bodySelector).val($(config.bodySelector).val() + '[[selfie-placeholder-' + number + ']]\n');
+    textarea.val(currentContents + '[[selfie-placeholder-' + number + ']]\n');
   }
 
   function replacePlaceholderInBody (number, link) {
-    var textarea  = document.querySelector(config.bodySelector)
-      , toReplace = '[[selfie-placeholder-' + number + ']]';
+    var textarea = buttons.elem.parent().parent().prev().find('textarea');
+    console.log('textarea', textarea);
+    var toReplace = '[[selfie-placeholder-' + number + ']]';
 
-    $(config.bodySelector)
-      .val($(config.bodySelector)
-      .val()
-      .replace(toReplace, '![selfie-' + number + '](' + link + ')'));
-
+    textarea.val(
+      textarea.val()
+        .replace(toReplace, '![selfie-' + number + '](' + link + ')'));
     textarea.focus();
     textarea.setSelectionRange(textarea.textLength, textarea.textLength);
-  }
-
-  function notifyFail () {
-    $(videoSelector).remove();
-    $(canvasSelector).remove();
-    $(buttonSelector)
-      .prop('disabled', true)
-      .text('Something broke :(')
-      .addClass('btn-danger')
-      .children('span').remove();
-  }
-
-  function startVideo (buttons) {
-    // TODO: insert video
-    placeVideo(buttons);
-
-// TODO: handle video stream events
-
-    $('.github-selfies--selfieVideoContainer').removeClass(hiddenClass);
-    $('.selfieVideoOverlay').text('Fetching camera stream...');
-    $(buttonSelector).prop('disabled', true);
-    if (typeof config.preVideoStart === 'function') { config.preVideoStart(); }
-
-    var getUserMedia;
-    if (typeof navigator.webkitGetUserMedia === 'function') {
-      getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
-    } else if (typeof navigator.mozGetUserMedia === 'function') {
-      getUserMedia = navigator.mozGetUserMedia.bind(navigator);
-    } else {
-      getUserMedia = function () { alert("Your browser does not support camera input!"); };
-    }
-
-    getUserMedia({video: true}, function(_stream) {
-      $(buttonSelector).prop('disabled', false);
-      $('.selfieVideoOverlay').text('');
-      $(videoSelector).removeClass(hiddenClass);
-      var video = document.querySelector(videoSelector);
-      stream = _stream;
-      video.src = window.URL.createObjectURL(_stream);
-      console.log("Video:", video, video.src, stream);
-      if (typeof config.postVideoStart === 'function') { config.postVideoStart(); }
-    }, function(e) {
-      if (e.name === 'DevicesNotFoundError') {
-        $(buttonSelector).prop('disabled', false);
-        $('.selfieVideoOverlay').text("You don't have a camera available!");
-        // TODO: no camera connected
-      } else {
-        console.error("Couldn't start selfie video", e);
-        notifyFail();
-      }
-    });
-  }
-
-  function stopVideo () {
-    $(videoSelector).addClass('hideSelfieVideo');
-    stream.stop();
-    stream = null;
-    if (typeof config.postVideoStop === 'function') { config.postVideoStop(); }
-  }
-
-  function hideElements () {
-    $('.github-selfies').addClass(hiddenClass);
-  }
-
-  function showElements () {
-    $('.github-selfies').removeClass(hiddenClass);
-  }
-
-  function toggleDynamicSelfie() {
-    var selfieButton = $('#totallyAwesomeSelfieIcon');
-    var toggleButton = $(toggleSelector);
-    if (toggleButton.hasClass('selected')) {
-      toggleButton.text('Video instead');
-    } else {
-      toggleButton.text('Photo instead');
-    }
-    selfieButton.toggleClass('octicon-device-camera octicon-device-camera-video');
-    toggleButton.toggleClass('selected dark-grey');
   }
 }
