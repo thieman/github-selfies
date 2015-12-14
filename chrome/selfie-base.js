@@ -1,19 +1,18 @@
 function GitHubSelfies(config) {
-
   var stream;
 
-  config.buttonSelector   = '#totallyAwesomeSelfieButton';
+  config.buttonSelector = '#totallyAwesomeSelfieButton';
   config.toggleSelector = '#selfieToggle';
-  config.canvasSelector   = '#selfieCanvas';
-  config.videoSelector    = '#selfieVideo';
-  config.setupComplete    = false;
-  config.selfiesTaken     = 0;
-  config.interval         = 100;
-  config.clientId         = 'cc9df57988494ca';
-  config.stream           = null;
+  config.canvasSelector = '#selfieCanvas';
+  config.videoSelector  = '#selfieVideo';
+  config.setupComplete  = false;
+  config.selfiesTaken   = 0;
+  config.interval       = 100;
+  config.clientId       = 'cc9df57988494ca';
+  config.stream         = null;
 
   config.toggleHTML = (
-    '<button id="selfieToggle" type="button" class="button dark-grey">Video instead</button>'
+    '<button id="selfieToggle" type="button" class="btn btn-default">Video instead</button>'
   );
 
   config.videoHTML = (

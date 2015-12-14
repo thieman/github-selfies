@@ -1,1 +1,0 @@
-../../chrome/new-issue.js
