@@ -1,9 +1,83 @@
-.github-selfies--selfieControls {
-    float: left;
+#selfieControls {
+    float:right;
+    overflow: auto;
+    margin-right: 6px;
 }
 
-.github-selfies--hidden {
-    display: none;
+#selfieVideo {
+  width: 348px;
+  transform: rotateY(180deg);
 }
+
+.selfieVideoContainer {
+  display: inline-block;
+  width: auto;
+  vertical-align: top;
+  margin: 0 16px;
+}
+
+.selfieProgressContainer {
+  width: 224px !important;
+  margin-left:-23px !important;
+}
+
+.selfieProgress {
+  height:2px;
+  width:0px;
+  background-color: red;
+}
+
+.selfieVideoOverlay {
+ position: relative;
+ top:0;
+ left:0;
+ margin-top:50px;
+ margin-left:10px;
+ z-index:10;
+ margin:0 0 0 0;
+}
+
+#selfieToggleLabel {
+  margin-right:5px;
+}
+
+#selfieToggle {
+  width: 55px;
+  margin-right: 5px;
+}
+
+div.selfieProgress.newIssueSelfieProgress {
+  height:2px;
+  width:0px;
+  background-color: red;
+  float:right;
+}
+
+#totallyAwesomeSelfieButton {
+  margin-right: 5px;
+}
+
+#totallyAwesomeSelfieIcon {
+  font-size: 22px;
+  margin-right: 5px;
+  line-height: 0px;
+}
+
+.counter-container {
+  padding-left: 64px;
+  float: left;
+  position: absolute;
+}
+
+.count {
+  position: relative;
+  float: left;
+  z-index: 999;
+  margin-top: 45px;
+  font-size: 75px;
+  text-shadow: -1px -1px 1px #999, 1px 1px 1px #222;
+  color: #fff;
+}
+
 
 // TODO: styles for countown, overlay, etc
