@@ -1,40 +1,47 @@
 #selfieControls {
-    float:right;
-    overflow: auto;
-    margin-right: 6px;
+  float: right;
+  overflow: auto;
+  margin-right: 6px;
+}
+
+.selfieTakeButton {
+  float: right;
 }
 
 #selfieVideo {
-  width: 348px;
+  width: 100%;
   transform: rotateY(180deg);
+  background: black;
 }
 
 .selfieVideoContainer {
+  position: relative;
+  width: 450px;
   display: inline-block;
-  width: auto;
   vertical-align: top;
   margin: 0 16px;
 }
 
 .selfieProgressContainer {
-  width: 224px !important;
-  margin-left:-23px !important;
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
 }
 
 .selfieProgress {
-  height:2px;
-  width:0px;
+  height:4px;
+  width: 0px;
   background-color: red;
 }
 
 .selfieVideoOverlay {
- position: relative;
- top:0;
- left:0;
- margin-top:50px;
- margin-left:10px;
- z-index:10;
- margin:0 0 0 0;
+  position: relative;
+  top:0;
+  left:0;
+  margin-top:50px;
+  margin-left:10px;
+  z-index:10;
+  margin:0 0 0 0;
 }
 
 #selfieToggleLabel {
@@ -64,20 +71,34 @@ div.selfieProgress.newIssueSelfieProgress {
 }
 
 .counter-container {
-  padding-left: 64px;
-  float: left;
   position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.selfie-countdown {
+  position: relative;
 }
 
 .count {
-  position: relative;
-  float: left;
-  z-index: 999;
-  margin-top: 45px;
-  font-size: 75px;
+  font-size: 92px;
   text-shadow: -1px -1px 1px #999, 1px 1px 1px #222;
   color: #fff;
 }
 
+.selfie-flash {
+  animation-name: flash-animation;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes flash-animation {
+  from { background: white; }
+  to   { background: default; }
+}
 
 // TODO: styles for countown, overlay, etc
