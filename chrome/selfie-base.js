@@ -107,6 +107,19 @@ function GitHubSelfieVideoPreview() {
   this.stream = null;
   this.dynamic = false; // dynamic == video
   // TODO: remember preference?
+
+  // Turn off the preview when the page is not visible to save battery
+  // and reduce the creepy feeling when your camera light is on because of
+  // a page you forgot about.
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === 'visible') {
+      if (this.stream === null) {
+        this.startPreview();
+      }
+    } else {
+      this.stopPreview();
+    }
+  }.bind(this), false);
 }
 
 GitHubSelfieVideoPreview.prototype = {
