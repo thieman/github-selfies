@@ -388,7 +388,7 @@ GitHubSelfies.prototype = {
 
     this.textarea.val(
       this.textarea.val()
-        .replace(toReplace, '![selfie-' + number + '](' + link + ')'));
+        .replace(toReplace, '[![selfie-' + number + '](' + link + ')](https://github.com/thieman/github-selfies/)'));
     this.textarea.focus();
     this.textarea.get(0)
       .setSelectionRange(this.textarea.textLength, this.textarea.textLength);
