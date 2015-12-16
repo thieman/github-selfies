@@ -57,8 +57,7 @@
     console.log("Adding selfies to:", window.location.href);
 
     var client = new GitHubSelfies({
-      insertBefore: ['.timeline-new-comment .form-actions .btn-primary'],
-      bodySelector: '[id^=issue_body]'
+      insertAt: ['.timeline-new-comment .form-actions']
     });
     client.setupSelfieStream();
   }

@@ -1,3 +1,13 @@
+/*
+  This is a little nutty - override GitHub's styles to use flexbox
+  so we can have the video fill the available space!
+*/
+.form-actions {
+  display: flex;
+  flex-direction: row-reverse; /* simulate their float: right */
+  align-items: flex-start;
+}
+
 #selfieControls {
   float: right;
   overflow: auto;
@@ -16,10 +26,9 @@
 
 .selfieVideoContainer {
   position: relative;
-  width: 450px;
-  display: inline-block;
+  flex: 1; /* Take available space */
   vertical-align: top;
-  margin: 0 16px;
+  margin-right: 8px;
 }
 
 .selfieProgressContainer {

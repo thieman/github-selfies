@@ -35,7 +35,7 @@ GitHubSelfieButtons.prototype = {
   insert: function(element) {
     // TODO: there can be only one
     // Be careful not to insert more than once!
-    this.elem.eq(0).insertAfter(element);
+    this.elem.eq(0).appendTo(element);
     return this;
   },
 
@@ -135,7 +135,7 @@ GitHubSelfieVideoPreview.prototype = {
   insert: function(element) {
     // TODO: there can be only one
     // Be careful not to insert more than once!
-    this.elem.eq(0).insertBefore(element);
+    this.elem.eq(0).insertAfter(element);
     return this;
   },
 
@@ -266,8 +266,8 @@ function GitHubSelfies(config) {
     }
 
     var candidate;
-    for (var i = 0; i < config.insertBefore.length; i++) {
-      candidate = $(config.insertBefore[i] + ':visible');
+    for (var i = 0; i < config.insertAt.length; i++) {
+      candidate = $(config.insertAt[i] + ':visible');
       if (candidate.length !== 0) {
         break;
       }
