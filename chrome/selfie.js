@@ -44,22 +44,12 @@
 
   function addSelfies() {
     if (!any(allowedPaths, function(path) {
-      return path.test(window.location.href); })) {
+      return path.test(window.location.href);
+    })) {
       // No selfies here!
-      console.log("This path isn't appropriate for selfies.", window.location.href);
       return;
     }
-
-    if (document.getElementById('totallyAwesomeSelfieButton')) {
-      console.log("Already got selfies");
-      return;
-    }
-    console.log("Adding selfies to:", window.location.href);
-
-    var client = new GitHubSelfies({
-      insertAt: ['.timeline-new-comment .form-actions']
-    });
-    client.setupSelfieStream();
+    new GitHubSelfies().setupSelfieStream();
   }
 
   // Add selfies when the extension is loaded into the page,
@@ -71,6 +61,4 @@
   });
   window.addEventListener("popstate", addSelfies);
   addSelfies();
-
-  console.log('Selfie loaded!');
 })();

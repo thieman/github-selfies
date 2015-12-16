@@ -44,13 +44,14 @@
 }
 
 .selfieVideoOverlay {
-  position: relative;
-  top:0;
-  left:0;
-  margin-top:50px;
-  margin-left:10px;
   z-index:10;
-  margin:0 0 0 0;
+  position: absolute;
+  color: white;
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+  top: 1em;
+  text-shadow: 1px 1px 4px black;
 }
 
 #selfieToggleLabel {
@@ -79,7 +80,7 @@ div.selfieProgress.newIssueSelfieProgress {
   line-height: 0px;
 }
 
-.counter-container {
+.selfieVideoContainer .counter-container {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -93,7 +94,7 @@ div.selfieProgress.newIssueSelfieProgress {
   position: relative;
 }
 
-.count {
+.selfieVideoContainer .counter-container .count {
   font-size: 92px;
   text-shadow: -1px -1px 1px #999, 1px 1px 1px #222;
   color: #fff;

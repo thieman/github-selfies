@@ -1,6 +1,4 @@
-// TODO: Test in the other locations
-
-// Create a selfie button in the given form.
+// A selfie toggle button that can be attached to the document.
 function GitHubSelfieButtons() {
   this.elem = $(
     '<div class="github-selfies" id="selfieControls">' +
@@ -13,15 +11,14 @@ function GitHubSelfieButtons() {
   this.selfieButton = this.elem.find('.totallyAwesomeSelfieButton');
   this.videoPreview = null;
 
-  // This passthrough sucks
-  this.onselfie = function (isDynamic, video, canvas, ctx, callback) {};
+  // TODO: This passthrough sucks
+  this.onselfie = function(isDynamic, video, canvas, ctx, callback) {};
 
   this.selfieButton
     .on('click', function() {
       if (this.videoPreview === null) {
-        this.showVideoPreview();
-        //this.disableButton();
         this.selfieButton.addClass('selected');
+        this.showVideoPreview();
         this.videoPreview.startPreview();
       } else {
         this.videoPreview.destroy();
@@ -33,25 +30,16 @@ function GitHubSelfieButtons() {
 
 GitHubSelfieButtons.prototype = {
   insert: function(element) {
-    // TODO: there can be only one
-    // Be careful not to insert more than once!
+    // Be careful not to insert more than one!
     this.elem.eq(0).appendTo(element);
-    return this;
-  },
-
-  hide: function() {
-    this.elem.addClass('hidden');
-    return this;
-  },
-  show: function() {
-    this.elem.removeClass('hidden');
-    return this;
   },
 
   destroy: function() {
     this.elem.remove();
     this.selfieButton = null;
-    this.videoPreview.destroy();
+    if (this.videoPreview !== null) {
+      this.videoPreview.destroy();
+    }
     this.videoPreview = null;
     this.onselfie = null;
   },
@@ -63,37 +51,27 @@ GitHubSelfieButtons.prototype = {
       this.videoPreview.onselfie = this.onselfie;
       this.videoPreview.insert(this.elem);
     }
-    this.videoPreview.show();
-    return this;
-  },
-  disableButton: function() {
-    this.selfieButton.prop('disabled', true);
-    return this;
-  },
-  enableButton: function() {
-    this.selfieButton.prop('disabled', false);
-    return this;
   },
 
-  // TODO: unused?
-  hideVideoPreview: function() {
-    if (this.videoPreview !== null) {
-      this.videoPreview.hide();
-      // TODO: destroy??
-    }
-    return this;
+  disableButton: function() {
+    this.selfieButton.prop('disabled', true);
+  },
+
+  enableButton: function() {
+    this.selfieButton.prop('disabled', false);
   }
 };
 
+// A selfie video preview and buttons that can be attached to the document.
 function GitHubSelfieVideoPreview() {
   this.elem = $(
-    '<div class="github-selfies selfieVideoContainer hidden">' +
+    '<div class="github-selfies selfieVideoContainer">' +
     '<div class="selfieProgressContainer"><div class="selfieProgress"></div></div>' +
     '<div class="selfie-countdown">' +
     '<div class="counter-container"></div>' +
     '<video autoplay id="selfieVideo"></video>' +
     '</div>' +
-    '<p class="selfieVideoOverlay">Click to take a selfie!</p>' +
+    '<p class="selfieVideoOverlay"></p>' +
     '<canvas id="selfieCanvas" class="hidden"></canvas>' +
     '<div class="btn-group">' +
     '<button type="button" class="selfiePhotoButton btn btn-sm selected">' +
@@ -111,7 +89,7 @@ function GitHubSelfieVideoPreview() {
     '</div>'
   );
 
-  this.onselfie = function (isDynamic, video, canvas, ctx, callback) {};
+  this.onselfie = function(isDynamic, video, canvas, ctx, callback) {};
 
   this.videoElem = this.elem.find('video').get(0);
   this.canvasElem = this.elem.find('canvas').get(0);
@@ -133,39 +111,21 @@ function GitHubSelfieVideoPreview() {
 
 GitHubSelfieVideoPreview.prototype = {
   insert: function(element) {
-    // TODO: there can be only one
-    // Be careful not to insert more than once!
+    // Be careful not to insert more than one!
     this.elem.eq(0).insertAfter(element);
-    return this;
   },
 
+  // Video (dynamic) needs to be resized smaller for preformnce
   resizeCanvas: function(isDynamic) {
-    this.canvasElem.setAttribute('height', this.videoElem.videoHeight / (isDynamic ? 3 : 1));
-    this.canvasElem.setAttribute('width', this.videoElem.videoWidth /  (isDynamic ? 3 : 1));
-    return this;
-  },
-
-  // TODO: unused?
-  hide: function() {
-    this.elem.addClass('hidden');
-    return this;
-  },
-  show: function() {
-    this.elem.removeClass('hidden');
-    return this;
+    var scalefactor = 1 / (isDynamic ? 3 : 1);
+    this.canvasElem.setAttribute('height', Math.round(this.videoElem.videoHeight * scalefactor));
+    this.canvasElem.setAttribute('width', Math.round(this.videoElem.videoWidth * scalefactor));
   },
 
   setMessage: function(message) {
-    this.textOverlay.text(message);
-    return this;
-  },
-
-  // TODO: fold into destroy?
-  stopPreview: function() {
-    if (this.stream !== null) {
-      this.stream.getTracks()[0].stop();
+    if (this.textOverlay !== null) {
+      this.textOverlay.text(message);
     }
-    this.stream = null;
   },
 
   destroy: function() {
@@ -196,22 +156,16 @@ GitHubSelfieVideoPreview.prototype = {
   startPreview: function() {
     this.setMessage('Fetching camera stream...');
 
-    // TODO: handle video stream events
-    // TODO: gotta clean up previous stuff! close video, etc
-
     var getUserMedia;
     if (typeof navigator.webkitGetUserMedia === 'function') {
       getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
     } else if (typeof navigator.mozGetUserMedia === 'function') {
       getUserMedia = navigator.mozGetUserMedia.bind(navigator);
     } else {
-      getUserMedia = function () { alert("Your browser does not support camera input!"); };
+      getUserMedia = function() { alert("Your browser does not support camera input!"); };
     }
 
     getUserMedia({video: true}, function(_stream) {
-      //buttons.enableButton();
-      // TODO: disable/enable buttons
-      // TODO: don't show until this works?
       this.setMessage('');
       this.stream = _stream;
       this.videoElem.src = window.URL.createObjectURL(_stream);
@@ -220,18 +174,27 @@ GitHubSelfieVideoPreview.prototype = {
     }.bind(this));
   },
 
+  stopPreview: function() {
+    if (this.stream !== null) {
+      this.stream.getTracks()[0].stop();
+    }
+    this.stream = null;
+  },
+
   snapSelfie: function(dynamic, takeSelfieCallback, fileCallback) {
     this.resizeCanvas(dynamic);
     var ctx = this.canvasElem.getContext('2d');
-    this.selfieCountdown(takeSelfieCallback(this.videoElem, this.canvasElem, ctx, fileCallback));
+    this.selfieCountdown(
+      3,
+      takeSelfieCallback(this.videoElem, this.canvasElem, ctx, fileCallback));
   },
 
-  // TODO: de-classify this
-
-  showCount: function (count, callback) {
+  selfieCountdown: function(count, callback) {
     if (count > 0) {
       this.counterContainer.html('<h3 class="count">' + count + '</h3>');
-      setTimeout(function() { this.showCount(count - 1, callback); }.bind(this), 1000);
+      setTimeout(function() {
+        this.selfieCountdown(count - 1, callback);
+      }.bind(this), 1000);
     } else {
       this.counterContainer.empty();
       if (!this.dynamic) {
@@ -243,80 +206,92 @@ GitHubSelfieVideoPreview.prototype = {
       }
       callback();
     }
-  },
-  selfieCountdown: function(callback) {
-    this.showCount(3, callback);
   }
 };
 
+// Just to be tidy, only allow one of these to exist at once. Clean up
+// the old ones if we add a new one.
+var selfieSingleton = null;
 
-function GitHubSelfies(config) {
-  var selfiesTaken   = 0;
-  var interval       = 100;
-  var clientId       = 'cc9df57988494ca';
-  var buttons = null;
+function GitHubSelfies() {
+  this.selfiesTaken = 0;
+  // Milliseconds between frames in a GIF. Yields ~10fps.
+  this.interval = 100;
+  // Imgur client ID
+  this.clientId = 'cc9df57988494ca';
+  // This selector works on all pages
+  this.insertAt = '.timeline-new-comment .form-actions:visible';
+  this.buttons = null;
+  this.textarea = null;
+}
 
-  // TODO: move status overlay & countdown
-
-  // TODO: build component object w/ elems for buttons, video
-
-  this.setupSelfieStream = function setupSelfieStream () {
-    if (buttons !== null) {
-      // TODO: gotta clean up previous stuff! close video, etc
+GitHubSelfies.prototype = {
+  setupSelfieStream: function() {
+    if (selfieSingleton !== null) {
+      selfieSingleton.destroy();
+      selfieSingleton = null;
     }
+    selfieSingleton = this;
 
-    var candidate;
-    for (var i = 0; i < config.insertAt.length; i++) {
-      candidate = $(config.insertAt[i] + ':visible');
-      if (candidate.length !== 0) {
-        break;
-      }
-      candidate = null;
-    }
-    if (candidate === null) {
-      setTimeout(function() { setupSelfieStream(); }, 250);
+    var candidate = $(this.insertAt);
+    if (candidate.length === 0) {
+      // Try again later
+      setTimeout(function() { this.setupSelfieStream(); }.bind(this), 250);
     } else {
       $('.form-actions-protip').hide();
-      buttons = new GitHubSelfieButtons();
-      buttons.insert(candidate);
-      setupEvents(buttons);
+      this.buttons = new GitHubSelfieButtons();
+      this.buttons.insert(candidate);
+      // TODO: this is too fragile!
+      this.textarea = this.buttons.elem.parent().parent().find('textarea');
+      this.setupEvents();
     }
-  };
+  },
 
-  function hideElements () {
+  destroy: function() {
+    if (this.buttons !== null) {
+      this.buttons.destroy();
+    }
+    this.buttons = null;
+    this.textarea = null;
+  },
+
+  hideAllElements: function() {
     $('.github-selfies').addClass('hidden');
-  }
+  },
 
-  function showElements () {
+  showAllElements: function() {
     $('.github-selfies').removeClass('hidden');
-  }
+  },
 
-  function setupEvents (buttons) {
-    buttons.onselfie = addSelfie;
-    $('.write-tab').on('click', showElements);
-    $('.preview-tab').on('click', hideElements);
-  }
+  setupEvents: function() {
+    this.buttons.onselfie = this.addSelfie.bind(this);
+    $('.write-tab').on('click', this.showAllElements.bind(this));
+    $('.preview-tab').on('click', this.hideAllElements.bind(this));
+  },
 
-  function addSelfie (isDynamic) {
-    var thisSelfieNumber = selfiesTaken++;
+  addSelfie: function(isDynamic) {
+    var thisSelfieNumber = this.selfiesTaken++;
 
-    addSelfiePlaceholder(thisSelfieNumber);
-    buttons.videoPreview.snapSelfie(isDynamic, isDynamic ? dynamicSelfie : staticSelfie, imageSuccess);
+    this.addSelfiePlaceholder(thisSelfieNumber);
+    this.buttons.videoPreview.snapSelfie(
+      isDynamic,
+      isDynamic ? this.dynamicSelfie.bind(this) : this.staticSelfie.bind(this),
+      imageSuccess.bind(this));
 
     function imageSuccess (_imageData) {
-      uploadSelfie(_imageData, success, function(err) {
-        buttons.setMessage("Something went wrong :-(");
-        console.log("Error uploading selfie", err);
-      });
+      this.uploadSelfie(_imageData, success.bind(this), function(err) {
+        this.buttons.videoPreview.setMessage("Something went wrong :-(");
+        console.error("Error uploading selfie", err);
+      }.bind(this));
     }
 
     function success (res) {
-      replacePlaceholderInBody(thisSelfieNumber, res.data.link);
+      this.replacePlaceholderInBody(thisSelfieNumber, res.data.link);
     }
-  }
+  },
 
-  function staticSelfie (video, canvas, ctx, callback) {
-    return function () {
+  staticSelfie: function(video, canvas, ctx, callback) {
+    return function() {
       var imgBinary;
 
       ctx.save();
@@ -324,26 +299,24 @@ function GitHubSelfies(config) {
       // Save the image non-mirrored so writing goes the right way.
       //ctx.translate(video.videoWidth, 0);
       //ctx.scale(-1, 1);
-      // TODO: scale the image? it's pretty big
       ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth, video.videoHeight);
       imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
       ctx.restore();
       callback(imgBinary);
     };
-  }
+  },
 
-  function dynamicSelfie (video, canvas, ctx, callback) {
-    return function () {
+  dynamicSelfie: function(video, canvas, ctx, callback) {
+    return function() {
       var encoder = new GIFEncoder();
       var frame   = 0;
       var clock;
 
       encoder.setRepeat(0);
-      encoder.setDelay(interval);
+      encoder.setDelay(this.interval);
       encoder.start();
 
-      // TODO: requestanimationFrame
-      clock = setInterval(function () {
+      clock = setInterval(function() {
         var videoWidth  = $(video).width();
         var totalFrames = 20;
         var binaryGif;
@@ -355,7 +328,6 @@ function GitHubSelfies(config) {
           dataUrl   = 'data:image/gif;base64,'+ encode64(binaryGif);
           callback(encode64(binaryGif));
           clearInterval(clock);
-          // TODO: pipe this back to the UI object
           $('.selfieProgress').css('width', 0);
         } else {
           ctx.save();
@@ -369,17 +341,17 @@ function GitHubSelfies(config) {
           frame++;
           $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
         }
-      }, interval);
+      }, this.interval);
     };
-  }
+  },
 
-  function uploadSelfie (imageData, successCb, errorCb) {
+  uploadSelfie: function(imageData, successCb, errorCb) {
     $.ajax({
       url  : 'https://api.imgur.com/3/upload',
       type : 'POST',
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader('Authorization', 'Client-ID ' + clientId);
-      },
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', 'Client-ID ' + this.clientId);
+      }.bind(this),
       data: {
         type  : 'base64',
         image : imageData
@@ -388,26 +360,24 @@ function GitHubSelfies(config) {
       success  : successCb,
       error    : errorCb
     });
-  }
+  },
 
-  function addSelfiePlaceholder (number) {
-    // TODO: too fragile!
-    var textarea = buttons.elem.parent().parent().prev().find('textarea');
-    var currentContents = textarea.val();
+  addSelfiePlaceholder: function(number) {
+    var currentContents = this.textarea.val();
     if (currentContents !== '') {
-      textarea.val(currentContents + '\n');
+      this.textarea.val(currentContents + '\n');
     }
-    textarea.val(currentContents + '[[selfie-placeholder-' + number + ']]\n');
-  }
+    this.textarea.val(currentContents + '[[selfie-placeholder-' + number + ']]\n');
+  },
 
-  function replacePlaceholderInBody (number, link) {
-    var textarea = buttons.elem.parent().parent().prev().find('textarea');
+  replacePlaceholderInBody: function(number, link) {
     var toReplace = '[[selfie-placeholder-' + number + ']]';
 
-    textarea.val(
-      textarea.val()
+    this.textarea.val(
+      this.textarea.val()
         .replace(toReplace, '![selfie-' + number + '](' + link + ')'));
-    textarea.focus();
-    textarea.get(0).setSelectionRange(textarea.textLength, textarea.textLength);
+    this.textarea.focus();
+    this.textarea.get(0)
+      .setSelectionRange(this.textarea.textLength, this.textarea.textLength);
   }
-}
+};
