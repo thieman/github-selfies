@@ -30,3 +30,4 @@ This project is much better now than it was at launch thanks to these people.
 Awesome Person | Selfie
 -------------- | ------
 [Joe Lepper](http://github.com/joeLepper) | ![](https://camo.githubusercontent.com/fe6f151919b83cb46a4598293e3b26df05391d7a/687474703a2f2f692e696d6775722e636f6d2f615a396972764f2e676966)
+[Ben Hollis](http://github.com/bhollis) | ![](https://camo.githubusercontent.com/46f0d405b416184bd9771351c414bce5382ff029/687474703a2f2f692e696d6775722e636f6d2f5a486f756856562e676966)
