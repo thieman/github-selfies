@@ -15,7 +15,7 @@ function GitHubSelfieButtons() {
   this.onselfie = function(isDynamic, video, canvas, ctx, callback) {};
 
   this.selfieButton
-    .on('click', function() {
+    .on('click', () => {
       if (this.videoPreview === null) {
         this.selfieButton.addClass('selected');
         this.showVideoPreview();
@@ -25,7 +25,7 @@ function GitHubSelfieButtons() {
         this.videoPreview = null;
         this.selfieButton.removeClass('selected');
       }
-    }.bind(this));
+    });
 }
 
 GitHubSelfieButtons.prototype = {
@@ -103,7 +103,7 @@ function GitHubSelfieVideoPreview() {
     .on('click', this.setSelfieType.bind(this));
   this.takeButton = this.elem.find('.selfieTakeButton');
   this.takeButton
-    .on('click', function() { this.onselfie(this.dynamic); }.bind(this));
+    .on('click', () => this.onselfie(this.dynamic));
   this.stream = null;
   this.dynamic = false; // dynamic == video
   // TODO: remember preference?
@@ -111,7 +111,7 @@ function GitHubSelfieVideoPreview() {
   // Turn off the preview when the page is not visible to save battery
   // and reduce the creepy feeling when your camera light is on because of
   // a page you forgot about.
-  document.addEventListener("visibilitychange", function() {
+  document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === 'visible') {
       if (this.stream === null) {
         this.startPreview();
@@ -119,7 +119,7 @@ function GitHubSelfieVideoPreview() {
     } else {
       this.stopPreview();
     }
-  }.bind(this), false);
+  }, false);
 }
 
 GitHubSelfieVideoPreview.prototype = {
@@ -182,13 +182,13 @@ GitHubSelfieVideoPreview.prototype = {
       getUserMedia = function() { alert("Your browser does not support camera input!"); };
     }
 
-    getUserMedia({video: true}, function(_stream) {
+    getUserMedia({video: true}, (_stream) => {
       this.setMessage('');
       this.stream = _stream;
       this.videoElem.src = window.URL.createObjectURL(_stream);
-    }.bind(this), function(e) {
+    }, (e) => {
       this.setMessage("You don't have a camera available!");
-    }.bind(this));
+    });
   },
 
   stopPreview: function() {
@@ -209,17 +209,13 @@ GitHubSelfieVideoPreview.prototype = {
   selfieCountdown: function(count, callback) {
     if (count > 0) {
       this.counterContainer.html('<h3 class="count">' + count + '</h3>');
-      setTimeout(function() {
-        this.selfieCountdown(count - 1, callback);
-      }.bind(this), 1000);
+      setTimeout(() => this.selfieCountdown(count - 1, callback), 1000);
     } else {
       this.counterContainer.empty();
       if (!this.dynamic) {
         // Camera flash
         this.counterContainer.addClass('selfie-flash');
-        setTimeout(function() {
-          this.counterContainer.removeClass('selfie-flash');
-        }.bind(this), 1100);
+        setTimeout(() => this.counterContainer.removeClass('selfie-flash'), 1100);
       }
       callback();
     }
@@ -253,7 +249,7 @@ GitHubSelfies.prototype = {
     var candidate = $(this.insertAt);
     if (candidate.length === 0) {
       // Try again later
-      setTimeout(function() { this.setupSelfieStream(); }.bind(this), 250);
+      setTimeout(() => this.setupSelfieStream(), 250);
     } else {
       $('.form-actions-protip').hide();
       this.buttons = new GitHubSelfieButtons();
@@ -295,16 +291,17 @@ GitHubSelfies.prototype = {
       isDynamic ? this.dynamicSelfie.bind(this) : this.staticSelfie.bind(this),
       imageSuccess.bind(this));
 
+    success = (res) => {
+      this.replacePlaceholderInBody(thisSelfieNumber, res.data.link);
+    };
+
     function imageSuccess (_imageData) {
-      this.uploadSelfie(_imageData, success.bind(this), function(err) {
+      this.uploadSelfie(_imageData, success, (err) => {
         this.buttons.videoPreview.setMessage("Something went wrong :-(");
         console.error("Error uploading selfie", err);
-      }.bind(this));
+      });
     }
 
-    function success (res) {
-      this.replacePlaceholderInBody(thisSelfieNumber, res.data.link);
-    }
   },
 
   staticSelfie: function(video, canvas, ctx, callback) {
@@ -366,9 +363,9 @@ GitHubSelfies.prototype = {
     $.ajax({
       url  : 'https://api.imgur.com/3/upload',
       type : 'POST',
-      beforeSend: function(xhr) {
+      beforeSend: (xhr) => {
         xhr.setRequestHeader('Authorization', 'Client-ID ' + this.clientId);
-      }.bind(this),
+      },
       data: {
         type  : 'base64',
         image : imageData

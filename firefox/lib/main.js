@@ -13,15 +13,14 @@ pageMod.PageMod({
     "GIFEncoder.js",
     "selfie-base.js",
     "selfie.js"
-  ].map(function(path) { return self.data.url(path); })
+  ].map((path) => self.data.url(path))
 });
 
 // Modify CSP headers from Github so we can inject a script to forward
 // pushState info via postMessage.
 var httpRequestObserver =
 {
-  observe: function(subject, topic, data)
-  {
+  observe: function(subject, topic, data) {
     if (topic == "http-on-examine-response") {
       var httpChannel = subject.QueryInterface(Ci.nsIHttpChannel);
       if (/^https:\/\/github.com/.test(httpChannel.name)) {

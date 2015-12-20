@@ -43,9 +43,7 @@
   }
 
   function addSelfies() {
-    if (!any(allowedPaths, function(path) {
-      return path.test(window.location.href);
-    })) {
+    if (!any(allowedPaths, (path) => path.test(window.location.href))) {
       // No selfies here!
       return;
     }
