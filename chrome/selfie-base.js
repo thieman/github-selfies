@@ -104,6 +104,7 @@ function GitHubSelfieVideoPreview() {
   this.takeButton = this.elem.find('.selfieTakeButton');
   this.takeButton
     .on('click', () => this.onselfie(this.dynamic));
+  this.progress = this.elem.find('.selfieProgress');
   this.stream = null;
   this.dynamic = false; // dynamic == video
   // TODO: remember preference?
@@ -141,6 +142,11 @@ GitHubSelfieVideoPreview.prototype = {
     }
   },
 
+  // Progress in [0,1]
+  setProgress: function(percent) {
+    this.progress.css('width', percent*100 + "%");
+  },
+
   destroy: function() {
     // No memory leaks here!
     this.stopPreview();
@@ -153,6 +159,7 @@ GitHubSelfieVideoPreview.prototype = {
     this.videoButton = null;
     this.takeButton = null;
     this.onselfie = null;
+    this.progress = null;
   },
 
   setSelfieType: function(e) {
@@ -285,11 +292,11 @@ GitHubSelfies.prototype = {
   addSelfie: function(isDynamic) {
     var thisSelfieNumber = this.selfiesTaken++;
 
-    success = (res) => {
+    var success = (res) => {
       this.replacePlaceholderInBody(thisSelfieNumber, res.data.link);
     };
 
-    imageSuccess = (_imageData) => {
+    var imageSuccess = (_imageData) => {
       this.uploadSelfie(_imageData, success, (err) => {
         this.buttons.videoPreview.setMessage("Something went wrong :-(");
         console.error("Error uploading selfie", err);
@@ -322,38 +329,41 @@ GitHubSelfies.prototype = {
 
   dynamicSelfie: function(video, canvas, ctx, callback) {
     return () => {
-      var encoder = new GIFEncoder();
-      var frame   = 0;
+      var frame = 0;
       var clock;
+      var totalFrames = 20;
+      var frames = [];
+      // Height and width must be integral or the LZWEncoder will hang
+      var height = Math.floor(video.videoHeight / 3);
+      var width = Math.floor(video.videoWidth / 3);
 
-      encoder.setRepeat(0);
-      encoder.setDelay(this.interval);
-      encoder.start();
+      var makeGif = () => {
+        var encoder = new GIFEncoder();
+        encoder.setSize(width, height);
+        encoder.setRepeat(0);
+        encoder.setDelay(this.interval);
+        encoder.start();
+        for (var i = 0; i < frames.length; i++) {
+          encoder.addFrame(frames[i], true);
+        }
+        encoder.finish();
+        frames = null;
+        var binaryGif = encoder.stream().getData();
+        callback(encode64(binaryGif));
+      };
 
-      clock = setInterval(function() {
-        var videoWidth  = $(video).width();
-        var totalFrames = 20;
-        var binaryGif;
-        var dataUrl;
+      clock = setInterval(() => {
+        ctx.drawImage(video,
+                      0, 0, video.videoWidth, video.videoHeight,
+                      0, 0, width, height);
+        frames.push(ctx.getImageData(0, 0, width, height).data);
+        frame++;
+        this.buttons.videoPreview.setProgress(frame / totalFrames);
 
         if (frame >= totalFrames) {
-          encoder.finish();
-          binaryGif = encoder.stream().getData();
-          dataUrl   = 'data:image/gif;base64,'+ encode64(binaryGif);
-          callback(encode64(binaryGif));
           clearInterval(clock);
-          $('.selfieProgress').css('width', 0);
-        } else {
-          ctx.save();
-          // We used to flip this, but now the preview is just flipped in CSS.
-          // Save the image non-mirrored so writing goes the right way.
-          //ctx.translate(video.videoWidth / 3, 0);
-          //ctx.scale(-1, 1);
-          ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth / 3, video.videoHeight / 3);
-          encoder.addFrame(ctx);
-          ctx.restore();
-          frame++;
-          $('.selfieProgress').css('width', (videoWidth / totalFrames) * frame);
+          makeGif();
+          this.buttons.videoPreview.setProgress(0);
         }
       }, this.interval);
     };
