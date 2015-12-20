@@ -167,6 +167,10 @@ GitHubSelfieVideoPreview.prototype = {
   },
 
   startPreview: function() {
+    if (!this.videoElem) {
+      return;
+    }
+
     this.setMessage('Fetching camera stream...');
 
     var getUserMedia;
@@ -390,7 +394,9 @@ GitHubSelfies.prototype = {
       this.textarea.val()
         .replace(toReplace, '[![selfie-' + number + '](' + link + ')](https://github.com/thieman/github-selfies/)'));
     this.textarea.focus();
-    this.textarea.get(0)
-      .setSelectionRange(this.textarea.textLength, this.textarea.textLength);
+    // Cursor to end
+    var textareaElem = this.textarea.get(0);
+    var textareaLength = textareaElem.textLength;
+    textareaElem.setSelectionRange(textareaLength, textareaLength);
   }
 };

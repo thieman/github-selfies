@@ -6,5 +6,8 @@
   "author": "Travis Thieman",
   "license": "MIT",
   "version": "1.9.3",
-  "main": "lib/main.js"
+  "main": "lib/main.js",
+  "permissions": {
+    "cross-domain-content": ["https://api.imgur.com"]
+  }
 }
