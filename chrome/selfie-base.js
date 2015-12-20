@@ -285,22 +285,22 @@ GitHubSelfies.prototype = {
   addSelfie: function(isDynamic) {
     var thisSelfieNumber = this.selfiesTaken++;
 
-    this.addSelfiePlaceholder(thisSelfieNumber);
-    this.buttons.videoPreview.snapSelfie(
-      isDynamic,
-      isDynamic ? this.dynamicSelfie.bind(this) : this.staticSelfie.bind(this),
-      imageSuccess.bind(this));
-
     success = (res) => {
       this.replacePlaceholderInBody(thisSelfieNumber, res.data.link);
     };
 
-    function imageSuccess (_imageData) {
+    imageSuccess = (_imageData) => {
       this.uploadSelfie(_imageData, success, (err) => {
         this.buttons.videoPreview.setMessage("Something went wrong :-(");
         console.error("Error uploading selfie", err);
       });
-    }
+    };
+
+    this.addSelfiePlaceholder(thisSelfieNumber);
+    this.buttons.videoPreview.snapSelfie(
+      isDynamic,
+      isDynamic ? this.dynamicSelfie.bind(this) : this.staticSelfie.bind(this),
+      imageSuccess);
 
   },
 
@@ -321,7 +321,7 @@ GitHubSelfies.prototype = {
   },
 
   dynamicSelfie: function(video, canvas, ctx, callback) {
-    return function() {
+    return () => {
       var encoder = new GIFEncoder();
       var frame   = 0;
       var clock;
