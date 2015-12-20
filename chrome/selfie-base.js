@@ -337,19 +337,36 @@ GitHubSelfies.prototype = {
       var height = Math.floor(video.videoHeight / 3);
       var width = Math.floor(video.videoWidth / 3);
 
+      var addFrame = function (encoder, frame) {
+        return function() {
+          return new Promise(function (resolve, reject) {
+            if (encoder.addFrame(frame, true)) {
+              resolve();
+            } else {
+              reject("Error adding frame");
+            }
+          });
+        };
+      };
+
       var makeGif = () => {
         var encoder = new GIFEncoder();
         encoder.setSize(width, height);
         encoder.setRepeat(0);
         encoder.setDelay(this.interval);
         encoder.start();
+        var promise = Promise.resolve(true);
         for (var i = 0; i < frames.length; i++) {
-          encoder.addFrame(frames[i], true);
+          promise.then(addFrame(encoder, frames[i]));
         }
-        encoder.finish();
-        frames = null;
-        var binaryGif = encoder.stream().getData();
-        callback(encode64(binaryGif));
+        promise.then(function () {
+          encoder.finish();
+          frames = null;
+          var binaryGif = encoder.stream().getData();
+          callback(encode64(binaryGif));
+        }, function(err) {
+          console.error("ERROR: " + err);
+        });
       };
 
       clock = setInterval(() => {
