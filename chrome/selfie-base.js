@@ -132,8 +132,14 @@ GitHubSelfieVideoPreview.prototype = {
   // Video (dynamic) needs to be resized smaller for preformnce
   resizeCanvas: function(isDynamic) {
     var scalefactor = 1 / (isDynamic ? 2 : 1);
-    this.canvasElem.setAttribute('height', Math.round(this.videoElem.videoHeight * scalefactor));
-    this.canvasElem.setAttribute('width', Math.round(this.videoElem.videoWidth * scalefactor));
+    if (isDynamic) {
+      // Video is always 320x240
+      this.canvasElem.setAttribute('width', 320);
+      this.canvasElem.setAttribute('height', 240);
+    } else {
+      this.canvasElem.setAttribute('width', videoElem.videoWidth);
+      this.canvasElem.setAttribute('height', videoElem.videoHeight);
+    }
   },
 
   setMessage: function(message) {
