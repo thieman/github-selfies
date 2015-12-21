@@ -131,7 +131,7 @@ GitHubSelfieVideoPreview.prototype = {
 
   // Video (dynamic) needs to be resized smaller for preformnce
   resizeCanvas: function(isDynamic) {
-    var scalefactor = 1 / (isDynamic ? 3 : 1);
+    var scalefactor = 1 / (isDynamic ? 2 : 1);
     this.canvasElem.setAttribute('height', Math.round(this.videoElem.videoHeight * scalefactor));
     this.canvasElem.setAttribute('width', Math.round(this.videoElem.videoWidth * scalefactor));
   },
@@ -235,8 +235,6 @@ var selfieSingleton = null;
 
 function GitHubSelfies() {
   this.selfiesTaken = 0;
-  // Milliseconds between frames in a GIF. Yields ~10fps.
-  this.interval = 100;
   // Imgur client ID
   this.clientId = 'cc9df57988494ca';
   // This selector works on all pages
@@ -329,19 +327,23 @@ GitHubSelfies.prototype = {
 
   dynamicSelfie: function(video, canvas, ctx, callback) {
     return () => {
-      var frame = 0;
-      var clock;
-      var totalFrames = 20;
-      var frames = [];
+      var fps = 15;
+      var duration = 2; // s
+      var totalFrames = Math.floor(duration * fps);
+      var interval = Math.floor(1000 / fps);
       // Height and width must be integral or the LZWEncoder will hang
-      var height = Math.floor(video.videoHeight / 3);
-      var width = Math.floor(video.videoWidth / 3);
+      var height = Math.floor(canvas.height);
+      var width = Math.floor(canvas.width);
+      var frames = [];
+      var frameNum = 0;
+      var lastFrameTime = 0;
 
       var addFrame = function (encoder, frame) {
-        return function() {
+        return () => {
           return new Promise(function (resolve, reject) {
-            if (encoder.addFrame(frame, true)) {
-              resolve();
+            encoder.setDelay(frame[1]);
+            if (encoder.addFrame(frame[0], true)) {
+              resolve(encoder);
             } else {
               reject("Error adding frame");
             }
@@ -353,36 +355,50 @@ GitHubSelfies.prototype = {
         var encoder = new GIFEncoder();
         encoder.setSize(width, height);
         encoder.setRepeat(0);
-        encoder.setDelay(this.interval);
         encoder.start();
         var promise = Promise.resolve(true);
         for (var i = 0; i < frames.length; i++) {
           promise.then(addFrame(encoder, frames[i]));
         }
-        promise.then(function () {
-          encoder.finish();
-          frames = null;
-          var binaryGif = encoder.stream().getData();
-          callback(encode64(binaryGif));
-        }, function(err) {
-          console.error("ERROR: " + err);
-        });
+        return promise
+          .then(() => {
+            encoder.finish();
+            frames = null;
+            return encoder.stream().getData();
+          })
+          .then(encode64)
+          .then(callback);
       };
 
-      clock = setInterval(() => {
-        ctx.drawImage(video,
-                      0, 0, video.videoWidth, video.videoHeight,
-                      0, 0, width, height);
-        frames.push(ctx.getImageData(0, 0, width, height).data);
-        frame++;
-        this.buttons.videoPreview.setProgress(frame / totalFrames);
+      // We use requestAnimationFrame instead of setInterval so that
+      // we are better sync'ed with the video.
+      var captureFrame = () => {
+        // schedule another frame right away
+        var rafRequest = requestAnimationFrame(captureFrame);
 
-        if (frame >= totalFrames) {
-          clearInterval(clock);
-          makeGif();
-          this.buttons.videoPreview.setProgress(0);
+        var frameTime = performance.now();
+        var frameDelay = frameTime - lastFrameTime;
+        // Limit to a set fps by skipping this callback unless the
+        // interval is greater than what we want.
+        if (frameDelay >= interval) {
+          frameNum++;
+          lastFrameTime = frameTime;
+          if (frameNum === 1) {
+            frameDelay = 0;
+          }
+          ctx.drawImage(video,
+                        0, 0, video.videoWidth, video.videoHeight,
+                        0, 0, width, height);
+          frames.push([ctx.getImageData(0, 0, width, height).data, frameDelay]);
+          this.buttons.videoPreview.setProgress(frameNum / totalFrames);
+          if (frameNum >= totalFrames) {
+            cancelAnimationFrame(rafRequest);
+            makeGif().then(() => this.buttons.videoPreview.setProgress(0));
+          }
         }
-      }, this.interval);
+      };
+
+      requestAnimationFrame(captureFrame);
     };
   },
 
