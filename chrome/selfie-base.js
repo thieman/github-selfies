@@ -83,6 +83,12 @@ function GitHubSelfieVideoPreview() {
     ' Video' +
     '</button>' +
     '</div>' +
+    '<select class="selfieDuration">' +
+    '<option>1</option>' +
+    '<option>2</option>' +
+    '<option>3</option>' +
+    '<option>4</option>' +
+    '</select>' +
     '<button type="button" class="selfieTakeButton btn btn-primary btn-sm">' +
     ' Take a selfie!' +
     '</button>' +
@@ -107,7 +113,20 @@ function GitHubSelfieVideoPreview() {
   this.progress = this.elem.find('.selfieProgress');
   this.stream = null;
   this.dynamic = false; // dynamic == video
-  // TODO: remember preference?
+  this.videoDuration = 2; // seconds
+  this.loadPreferences();
+
+  this.durationSelector = this.elem.find('.selfieDuration');
+  this.durationSelector.val(this.videoDuration);
+  this.durationSelector.on('change', () => {
+    this.setVideoDuration(this.durationSelector.val());
+    this.savePreferences();
+  });
+
+  if (this.dynamic) {
+    this.videoButton.addClass('selected');
+    this.photoButton.removeClass('selected');
+  }
 
   // Turn off the preview when the page is not visible to save battery
   // and reduce the creepy feeling when your camera light is on because of
@@ -168,6 +187,21 @@ GitHubSelfieVideoPreview.prototype = {
     this.progress = null;
   },
 
+  setVideoDuration: function(val) {
+    // Just to be careful, clamp 1-4
+    this.videoDuration = Math.max(1, Math.min(parseInt(val), 4));
+  },
+
+  loadPreferences: function() {
+    this.dynamic = localStorage.getItem('selfieDynamic') === 'true';
+    this.setVideoDuration(localStorage.getItem('selfieVideoDuration') || "2");
+  },
+
+  savePreferences: function() {
+    localStorage.setItem('selfieDynamic', this.dynamic ? 'true' : 'false');
+    localStorage.setItem('selfieVideoDuration', this.videoDuration.toString());
+  },
+
   setSelfieType: function(e) {
     if ((e.target === this.photoButton.get(0) &&
          !this.photoButton.hasClass('selected')) ||
@@ -176,6 +210,7 @@ GitHubSelfieVideoPreview.prototype = {
       this.videoButton.toggleClass('selected');
       this.photoButton.toggleClass('selected');
       this.dynamic = !this.dynamic;
+      this.savePreferences();
     }
   },
 
@@ -334,8 +369,7 @@ GitHubSelfies.prototype = {
   dynamicSelfie: function(video, canvas, ctx, callback) {
     return () => {
       var fps = 15;
-      var duration = 2; // s
-      var totalFrames = Math.floor(duration * fps);
+      var totalFrames = Math.floor(this.buttons.videoPreview.videoDuration * fps);
       var interval = Math.floor(1000 / fps);
       // Height and width must be integral or the LZWEncoder will hang
       var height = Math.floor(canvas.height);
