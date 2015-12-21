@@ -464,11 +464,11 @@ GitHubSelfies.prototype = {
     if (currentContents !== '') {
       this.textarea.val(currentContents + '\n');
     }
-    this.textarea.val(currentContents + '[[selfie-placeholder-' + number + ']]\n');
+    this.textarea.val(currentContents + '[[selfie-' + number + ' uploading...]]\n');
   },
 
   replacePlaceholderInBody: function(number, link) {
-    var toReplace = '[[selfie-placeholder-' + number + ']]';
+    var toReplace = '[[selfie-' + number + ' uploading...]]';
 
     this.textarea.val(
       this.textarea.val()
