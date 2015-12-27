@@ -18,6 +18,10 @@
   float: right;
 }
 
+.selfieDuration {
+  height: auto !important;
+}
+
 #selfieVideo {
   width: 100%;
   transform: rotateY(180deg);

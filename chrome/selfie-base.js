@@ -127,6 +127,7 @@ function GitHubSelfieVideoPreview() {
     this.videoButton.addClass('selected');
     this.photoButton.removeClass('selected');
   }
+  this.durationSelector.toggle(this.dynamic);
 
   // Turn off the preview when the page is not visible to save battery
   // and reduce the creepy feeling when your camera light is on because of
@@ -210,6 +211,7 @@ GitHubSelfieVideoPreview.prototype = {
       this.videoButton.toggleClass('selected');
       this.photoButton.toggleClass('selected');
       this.dynamic = !this.dynamic;
+      this.durationSelector.toggle(this.dynamic);
       this.savePreferences();
     }
   },
