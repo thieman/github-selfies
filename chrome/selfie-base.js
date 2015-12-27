@@ -338,13 +338,13 @@ GitHubSelfies.prototype = {
     };
 
     var imageSuccess = (_imageData) => {
+      this.addSelfiePlaceholder(thisSelfieNumber);
       this.uploadSelfie(_imageData, success, (err) => {
         this.buttons.videoPreview.setMessage("Something went wrong :-(");
         console.error("Error uploading selfie", err);
       });
     };
 
-    this.addSelfiePlaceholder(thisSelfieNumber);
     this.buttons.videoPreview.snapSelfie(
       isDynamic,
       isDynamic ? this.dynamicSelfie.bind(this) : this.staticSelfie.bind(this),
