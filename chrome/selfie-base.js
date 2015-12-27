@@ -156,8 +156,8 @@ GitHubSelfieVideoPreview.prototype = {
       this.canvasElem.setAttribute('width', 320);
       this.canvasElem.setAttribute('height', 240);
     } else {
-      this.canvasElem.setAttribute('width', videoElem.videoWidth);
-      this.canvasElem.setAttribute('height', videoElem.videoHeight);
+      this.canvasElem.setAttribute('width', this.videoElem.videoWidth);
+      this.canvasElem.setAttribute('height', this.videoElem.videoHeight);
     }
   },
 
