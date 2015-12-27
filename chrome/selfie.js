@@ -19,6 +19,11 @@
       window.postMessage('selfie:pageUpdated', '*');
       return pushState.apply(this, arguments);
     };
+    var replaceState = history.replaceState;
+    history.replaceState = function on_replaceState() {
+      window.postMessage('selfie:pageUpdated', '*');
+      return replaceState.apply(this, arguments);
+    };
   });
 
   var allowedPaths = [
