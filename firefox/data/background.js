@@ -1,0 +1,1 @@
+../../chrome/background.js

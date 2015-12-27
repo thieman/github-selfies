@@ -1,0 +1,118 @@
+/*
+  This is a little nutty - override GitHub's styles to use flexbox
+  so we can have the video fill the available space!
+*/
+.form-actions {
+  display: flex;
+  flex-direction: row-reverse; /* simulate their float: right */
+  align-items: flex-start;
+}
+
+#selfieControls {
+  float: right;
+  overflow: auto;
+  margin-right: 6px;
+}
+
+.selfieTakeButton {
+  float: right;
+}
+
+.selfieDuration {
+  height: auto !important;
+}
+
+#selfieVideo {
+  width: 100%;
+  transform: rotateY(180deg);
+  background: black;
+}
+
+.selfieVideoContainer {
+  position: relative;
+  flex: 1; /* Take available space */
+  vertical-align: top;
+  margin-right: 8px;
+}
+
+.selfieProgressContainer {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+}
+
+.selfieProgress {
+  height:4px;
+  width: 0px;
+  background-color: red;
+}
+
+.selfieVideoOverlay {
+  z-index:10;
+  position: absolute;
+  color: white;
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+  top: 1em;
+  text-shadow: 1px 1px 4px black;
+}
+
+#selfieToggleLabel {
+  margin-right:5px;
+}
+
+#selfieToggle {
+  width: 55px;
+  margin-right: 5px;
+}
+
+div.selfieProgress.newIssueSelfieProgress {
+  height:2px;
+  width:0px;
+  background-color: red;
+  float:right;
+}
+
+#totallyAwesomeSelfieButton {
+  margin-right: 5px;
+}
+
+#totallyAwesomeSelfieIcon {
+  font-size: 22px;
+  margin-right: 5px;
+  line-height: 0px;
+}
+
+.selfieVideoContainer .counter-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.selfie-countdown {
+  position: relative;
+}
+
+.selfieVideoContainer .counter-container .count {
+  font-size: 92px;
+  text-shadow: -1px -1px 1px #999, 1px 1px 1px #222;
+  color: #fff;
+}
+
+.selfie-flash {
+  animation-name: flash-animation;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+}
+
+@keyframes flash-animation {
+  from { background: white; }
+  to   { background: default; }
+}
+
+// TODO: styles for countown, overlay, etc
