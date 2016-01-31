@@ -19,10 +19,12 @@ function GitHubSelfieButtons() {
       if (this.videoPreview === null) {
         this.selfieButton.addClass('selected');
         this.showVideoPreview();
+        $('.toolbar-help').hide();
         this.videoPreview.startPreview();
       } else {
         this.videoPreview.destroy();
         this.videoPreview = null;
+        $('.toolbar-help').show();
         this.selfieButton.removeClass('selected');
       }
     });
