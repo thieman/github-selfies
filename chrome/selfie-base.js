@@ -32,8 +32,9 @@ function GitHubSelfieButtons() {
 
 GitHubSelfieButtons.prototype = {
   insert: function(element) {
-    // Be careful not to insert more than one!
-    this.elem.eq(0).appendTo(element);
+    // not sure why they're doubling up, but this'll kill 'em
+    $('.github-selfies').remove();
+    this.elem.appendTo(element);
   },
 
   destroy: function() {
