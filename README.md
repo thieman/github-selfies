@@ -19,8 +19,8 @@ First, clone this repository: `git clone https://github.com/thieman/github-selfi
 
 ### Firefox
 
-1. Install NodeJS.
-2. Install `jpm` (`node install -g jpm`)
+1. Install NodeJS and npm.
+2. Install `jpm` (`npm install -g jpm`)
 3. Run `jpm run` from within the `firefox/` subfolder of this repository.
 
 ## Awesome contributors
