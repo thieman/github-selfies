@@ -474,12 +474,12 @@ GitHubSelfies.prototype = {
 
   replacePlaceholderInBody: function(number, link) {
     var toReplace = '[[selfie-' + number + ' uploading...]]';
-    var replaceWith = '![selfie-' + number + '](' + link + ')';
-    if (number == 0){
-      replaceWith += '\n[_GitHub Selfies_](https://github.com/thieman/github-selfies/)';
-    }
+    var linkback = '[_GitHub Selfies_](https://github.com/thieman/github-selfies/)';
+    var replaceWith = '![selfie-' + number + '](' + link + ')\n' + linkback;
+
     this.textarea.val(
       this.textarea.val()
+        .replace(linkback, '')
         .replace(toReplace, replaceWith));
     this.textarea.focus();
     // Cursor to end
