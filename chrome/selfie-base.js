@@ -86,12 +86,15 @@ function GitHubSelfieVideoPreview() {
     ' Video' +
     '</button>' +
     '</div>' +
-    '<select class="selfieDuration">' +
-    '<option>1</option>' +
-    '<option>2</option>' +
-    '<option>3</option>' +
-    '<option>4</option>' +
+    '<div class="selfieDuration">' +
+    'Duration: ' +
+    '<select>' +
+    '<option value=1>1s</option>' +
+    '<option value=2>2s</option>' +
+    '<option value=3>3s</option>' +
+    '<option value=4>4s</option>' +
     '</select>' +
+    '</div>' +
     '<button type="button" class="selfieTakeButton btn btn-primary btn-sm">' +
     ' Take a selfie!' +
     '</button>' +
