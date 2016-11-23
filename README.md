@@ -1,4 +1,4 @@
-github-selfies
+LOLgithub-selfies
 ==============
 
 Add selfies to your pull requests and comments on GitHub!
