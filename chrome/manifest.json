@@ -14,7 +14,8 @@
   "permissions": [
     "webRequest",
     "webRequestBlocking",
-    "*://github.com/*"
+    "*://github.com/*",
+    "https://api.imgur.com/3/upload"
   ],
 
   "background": {
