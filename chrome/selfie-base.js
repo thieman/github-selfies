@@ -238,7 +238,7 @@ GitHubSelfieVideoPreview.prototype = {
     getUserMedia({video: true}, (_stream) => {
       this.setMessage('');
       this.stream = _stream;
-      this.videoElem.src = window.URL.createObjectURL(_stream);
+      this.videoElem.srcObject = _stream;
     }, (e) => {
       this.setMessage("You don't have a camera available!");
     });
