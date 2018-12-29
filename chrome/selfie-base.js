@@ -369,6 +369,8 @@ GitHubSelfies.prototype = {
       //ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, video.videoWidth, video.videoHeight);
       imgBinary = canvas.toDataURL('/image/jpeg', 1).split(',')[1];
+      // Hack, canvas is initially hidden before any pictures are taken
+      $(canvas).removeClass('hidden');
       ctx.restore();
       callback(imgBinary);
     };
@@ -440,6 +442,8 @@ GitHubSelfies.prototype = {
           frames.push([ctx.getImageData(0, 0, width, height).data, frameDelay]);
           this.buttons.videoPreview.setProgress(frameNum / totalFrames);
           if (frameNum >= totalFrames) {
+            // Hack, canvas is initially hidden before any pictures are taken
+            $(canvas).removeClass('hidden');
             cancelAnimationFrame(rafRequest);
             makeGif().then(() => this.buttons.videoPreview.setProgress(0));
           }

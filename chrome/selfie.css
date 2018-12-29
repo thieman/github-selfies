@@ -5,7 +5,22 @@
 .form-actions {
   display: flex;
   flex-direction: row-reverse; /* simulate their float: right */
+  flex-wrap: wrap;
   align-items: flex-start;
+}
+
+/*
+  Trying to get the "Styling with Markdown is supported"
+  block to not push the flex container to the right.
+  There's almost certainly a better way, please replace
+  this if you figure it out.
+*/
+.js-suggester-container > .float-left {
+  position: absolute;
+}
+
+.hidden {
+  display: none;
 }
 
 #selfieControls {
@@ -33,8 +48,11 @@
 .selfieVideoContainer {
   position: relative;
   flex: 1; /* Take available space */
+  flex-basis: 100%;
+  width: 100%;
   vertical-align: top;
   margin-right: 8px;
+  margin-top: 8px;
 }
 
 .selfieProgressContainer {
