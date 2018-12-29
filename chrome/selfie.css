@@ -16,10 +16,12 @@
 
 .selfieTakeButton {
   float: right;
+  margin-right: 6px;
 }
 
 .selfieDuration {
   height: auto !important;
+  float: left;
 }
 
 #selfieVideo {
@@ -44,7 +46,7 @@
 .selfieProgress {
   height:4px;
   width: 0px;
-  background-color: red;
+  background-color: #60b044;
 }
 
 .selfieVideoOverlay {
