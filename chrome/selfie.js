@@ -28,13 +28,13 @@
 
   var allowedPaths = [
     // New issues
-    /github.com\/[\w\-]+\/[\w\-]+\/issues\/new/,
+    /https:\/\/github.com\/.+?\/.+?\/issues\/new/,
     // Existing issues (comment)
-    /github.com\/[\w\-]+\/[\w\-]+\/issues\/\d+/,
+    /https:\/\/github.com\/.+?\/.+?\/issues\/\d+/,
     // New pull request
-    /github.com\/[\w\-]+\/[\w\-]+\/compare/,
+    /https:\/\/github.com\/.+?\/.+?\/compare/,
     // Existing pull requests (comment)
-    /github.com\/[\w\-]+\/[\w\-]+\/pull\/\d+/
+    /https:\/\/github.com\/.+?\/.+?\/pull\/\d+/
   ];
 
   // Return true if predicate(item) returns true for any item in array.
