@@ -456,7 +456,7 @@ GitHubSelfies.prototype = {
 
   uploadSelfie: function(imageData, successCb, errorCb) {
     $.ajax({
-      url  : 'https://api.imgur.com/3/upload',
+      url  : 'https://api.imgur.com/3/image',
       type : 'POST',
       beforeSend: (xhr) => {
         xhr.setRequestHeader('Authorization', 'Client-ID ' + this.clientId);
