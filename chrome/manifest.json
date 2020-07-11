@@ -3,7 +3,7 @@
 
   "name": "GitHub Selfies",
   "description": "Selfies! For GitHub! Hooray!",
-  "version": "2.0.6",
+  "version": "2.0.7",
 
   "icons": {
     "16": "icon16.png",
@@ -15,7 +15,7 @@
     "webRequest",
     "webRequestBlocking",
     "*://github.com/*",
-    "https://api.imgur.com/3/upload"
+    "https://api.imgur.com/3/image"
   ],
 
   "background": {
